@@ -11,10 +11,10 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var usernameLabel: UILabel!
+    let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
     var items: [String] = []
     override func viewDidLoad() {
         super.viewDidLoad()
-        let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
         let isLoggedIn:Int = prefs.integerForKey("ISLOGGEDIN") as Int
         if (isLoggedIn == 1) {
         getPatients()
@@ -36,14 +36,14 @@ class ViewController: UIViewController {
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        println("You selected cell #\(indexPath.row)!")
+        prefs.setObject(items[indexPath.item], forKey: "CURRENT_PATIENT")
+        self.performSegueWithIdentifier("goto_patient_view", sender:self)
         // direct to patient page
     }
     
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-        let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
         let isLoggedIn:Int = prefs.integerForKey("ISLOGGEDIN") as Int
         
         if (isLoggedIn != 1) {
@@ -59,7 +59,6 @@ class ViewController: UIViewController {
     
     func getPatients(){
         items = []
-        let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
         let session_key:NSString = prefs.valueForKey("SESSION_KEY") as NSString
         let username:NSString = prefs.valueForKey("USERNAME") as NSString
         var get:NSString = "?session_key=\(session_key)"
