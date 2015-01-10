@@ -16,6 +16,9 @@
 		7C648BE21A5B5FD70067D539 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C648BE11A5B5FD70067D539 /* LoginVC.swift */; };
 		7C648BE41A5B5FE70067D539 /* SignupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C648BE31A5B5FE70067D539 /* SignupVC.swift */; };
 		7C7057291A607C7D00AD2279 /* PatientViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7057281A607C7D00AD2279 /* PatientViewVC.swift */; };
+		7C7057521A61138900AD2279 /* LineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7057511A61138900AD2279 /* LineChart.swift */; };
+		7C7057541A61139300AD2279 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7057531A61139300AD2279 /* MainViewController.swift */; };
+		7C7057561A611D6A00AD2279 /* DotCALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7057551A611D6A00AD2279 /* DotCALayer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +45,9 @@
 		7C648BE11A5B5FD70067D539 /* LoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		7C648BE31A5B5FE70067D539 /* SignupVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignupVC.swift; sourceTree = "<group>"; };
 		7C7057281A607C7D00AD2279 /* PatientViewVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatientViewVC.swift; sourceTree = "<group>"; };
+		7C7057511A61138900AD2279 /* LineChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LineChart.swift; path = "../../../../../Downloads/swift-linechart-master/linechart/linechart/LineChart.swift"; sourceTree = "<group>"; };
+		7C7057531A61139300AD2279 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainViewController.swift; path = "../../../../../Downloads/swift-linechart-master/linechart/linechart/MainViewController.swift"; sourceTree = "<group>"; };
+		7C7057551A611D6A00AD2279 /* DotCALayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DotCALayer.swift; path = "../../../../../Downloads/swift-linechart-master/linechart/linechart/DotCALayer.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +97,9 @@
 				7C648BBF1A5B5D610067D539 /* Supporting Files */,
 				7C648BE11A5B5FD70067D539 /* LoginVC.swift */,
 				7C648BE31A5B5FE70067D539 /* SignupVC.swift */,
+				7C7057551A611D6A00AD2279 /* DotCALayer.swift */,
+				7C7057531A61139300AD2279 /* MainViewController.swift */,
+				7C7057511A61138900AD2279 /* LineChart.swift */,
 				7C7057281A607C7D00AD2279 /* PatientViewVC.swift */,
 			);
 			path = PTPortal;
@@ -224,8 +233,11 @@
 				7C648BE41A5B5FE70067D539 /* SignupVC.swift in Sources */,
 				7C7057291A607C7D00AD2279 /* PatientViewVC.swift in Sources */,
 				7C648BC41A5B5D610067D539 /* ViewController.swift in Sources */,
+				7C7057561A611D6A00AD2279 /* DotCALayer.swift in Sources */,
+				7C7057521A61138900AD2279 /* LineChart.swift in Sources */,
 				7C648BC21A5B5D610067D539 /* AppDelegate.swift in Sources */,
 				7C648BE21A5B5FD70067D539 /* LoginVC.swift in Sources */,
+				7C7057541A61139300AD2279 /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
