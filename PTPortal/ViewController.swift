@@ -9,6 +9,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    @IBOutlet weak var logOutButton: UIButton!
     @IBOutlet weak var tableView: UITableView?
     @IBOutlet weak var usernameLabel: UILabel!
     @IBAction func goToHome(segue: UIStoryboardSegue) {
@@ -23,16 +24,21 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.isLoggedIn = NSUserDefaults.standardUserDefaults().valueForKey("ISLOGGEDIN") as? Int
-        if (self.isLoggedIn == 1) {
+        //NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "ISLOGGEDIN")
+        if (self.isLoggedIn != 0 && self.isLoggedIn != nil) {
+            println(self.isLoggedIn)
+            println(NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY"))
             self.prequest = PatientRequest(tableView: tableView!)
             self.prequest?.update()
-            self.prequest?.getPatients()
+            var s:Int = self.prequest!.getPatients()
+            if(s == 0){
+                self.performSegueWithIdentifier("goto_login", sender: self)
+            }
         }
         else{
             self.performSegueWithIdentifier("goto_login", sender: self)
         }
     }
-    
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (prequest != nil){
@@ -70,12 +76,15 @@ class ViewController: UIViewController {
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-        
-        if (self.isLoggedIn != 1) {
+        self.isLoggedIn =  NSUserDefaults.standardUserDefaults().valueForKey("ISLOGGEDIN") as? Int
+        if (self.isLoggedIn == 0 || self.isLoggedIn == nil) {
             self.performSegueWithIdentifier("goto_login", sender: self)
         } else{
             self.prequest?.update()
-            self.prequest?.getPatients()
+            var s:Int = self.prequest!.getPatients()
+            if(s == 0){
+                self.performSegueWithIdentifier("goto_login", sender: self)
+            }
         }
     }
     
@@ -122,17 +131,23 @@ class ViewController: UIViewController {
 
             
         }
-        func getPatients(){
+        func getPatients() -> Int {
             NSURLCache.sharedURLCache().removeAllCachedResponses()
-            self.items.removeAll()
+            self.items = []
             self.urlData = NSURLConnection.sendSynchronousRequest(self.request, returningResponse:&self.response, error:&self.reponseError)
             self.responseData = NSString(data:self.urlData!, encoding:NSUTF8StringEncoding)!
             self.jsonData = NSJSONSerialization.JSONObjectWithData(self.urlData!, options:NSJSONReadingOptions.MutableContainers , error: &self.error) as? NSDictionary
-            
+            if (self.jsonData?.valueForKey("success") as Int == 0){
+                let appDomain = NSBundle.mainBundle().bundleIdentifier
+                NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain!)
+                return 0
+                //logoutTapped(logOutButton)
+            }
             self.patient_list = self.jsonData?.valueForKey("patient_list") as [NSString]
             for(name) in self.patient_list{
                 self.items.append(name)
                 }
+            return 1
            // self.tableView?.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
             }
         
