@@ -9,101 +9,132 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var tableView: UITableView?
     @IBOutlet weak var usernameLabel: UILabel!
-    let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
-    var items: [String] = []
+    @IBAction func goToHome(segue: UIStoryboardSegue) {
+        
+        println("Called gotoHome: unwind action")
+        
+    }
+    var prequest:PatientRequest?
+    var isLoggedIn:Int?
+    var cell:UITableViewCell?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        let isLoggedIn:Int = prefs.integerForKey("ISLOGGEDIN") as Int
-        if (isLoggedIn == 1) {
-        getPatients()
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        self.isLoggedIn = NSUserDefaults.standardUserDefaults().valueForKey("ISLOGGEDIN") as? Int
+        if (self.isLoggedIn == 1) {
+            self.prequest = PatientRequest(tableView: tableView!)
+            self.prequest?.update()
+            self.prequest?.getPatients()
+        }
+        else{
+            self.performSegueWithIdentifier("goto_login", sender: self)
         }
     }
     
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.items.count;
+        if (prequest != nil){
+            return prequest!.items.count;
+        }
+        else{
+            return 0
+        }
     }
     
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("cell") as UITableViewCell
+      
+
+
+        self.cell = self.tableView!.dequeueReusableCellWithIdentifier("cell") as? UITableViewCell
         
-        cell.textLabel?.text = self.items[indexPath.row]
+        if (cell == nil) {
+            println("itwasnil")
+            self.cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: "cell")
+        }
+
+        cell!.textLabel?.text = prequest!.items[indexPath.row]
         
-        return cell
+        return cell!
+
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        prefs.setObject(items[indexPath.item], forKey: "CURRENT_PATIENT")
-        self.performSegueWithIdentifier("goto_patient_view", sender:self)
+        NSUserDefaults.standardUserDefaults().setObject(prequest!.items[indexPath.item], forKey: "CURRENT_PATIENT")
+        self.performSegueWithIdentifier("goto_patient_view",sender:self)
         // direct to patient page
     }
-    
+
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-        let isLoggedIn:Int = prefs.integerForKey("ISLOGGEDIN") as Int
         
-        if (isLoggedIn != 1) {
+        if (self.isLoggedIn != 1) {
             self.performSegueWithIdentifier("goto_login", sender: self)
         } else{
-            
-            self.usernameLabel.text = prefs.valueForKey("USERNAME") as NSString + "'s PT Portal"
-            getPatients()
-            self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+            self.prequest?.update()
+            self.prequest?.getPatients()
         }
     }
     
-    
-    func getPatients(){
-        items = []
-        let session_key:NSString = prefs.valueForKey("SESSION_KEY") as NSString
-        let username:NSString = prefs.valueForKey("USERNAME") as NSString
-        var get:NSString = "?session_key=\(session_key)"
-        
-        var url:NSURL = NSURL(string: "http://localhost:8000/ptapi/getPatients"+get)!
-        
-        var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
-        println(request)
-        request.HTTPMethod = "GET"
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
+    class PatientRequest{
+
+        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
+        var username = NSUserDefaults.standardUserDefaults().valueForKey("USERNAME") as NSString
+        var get:NSString
+        var url:NSURL
+        var items:[String]
+        var request:NSMutableURLRequest
         var reponseError: NSError?
         var response: NSURLResponse?
+        var urlData: NSData?
+        weak var responseData:NSString?
+        var error: NSError?
+        var jsonData:NSDictionary?
+        var patient_list:[NSString]
+        weak var tableView:UITableView?
+    
         
-        var urlData: NSData? = NSURLConnection.sendSynchronousRequest(request, returningResponse:&response, error:&reponseError)
-        
-        if ( urlData != nil ) {
-            let res = response as NSHTTPURLResponse!;
-            
-            NSLog("Response code: %ld", res.statusCode);
-            
-            if (res.statusCode >= 200 && res.statusCode < 300)
-            {
-                var responseData:NSString  = NSString(data:urlData!, encoding:NSUTF8StringEncoding)!
-                
-                NSLog("Response ==> %@", responseData);
-                
-                var error: NSError?
-                
-                let jsonData:NSDictionary = NSJSONSerialization.JSONObjectWithData(urlData!, options:NSJSONReadingOptions.MutableContainers , error: &error) as NSDictionary
-                
-                
-                let patient_list:[NSString] = jsonData.valueForKey("patient_list") as [NSString]
-                for(name) in patient_list{
-                    items.append(name)
-                    
-                }
-                
-                
-                
-                //[jsonData[@"success"] integerValue];
-                
-            }
+        init(tableView:UITableView){
+            println("initialized request")
+            self.get = "?session_key=\(self.session_key)"
+            self.url = NSURL(string: "http://localhost:8000/ptapi/getPatients"+get)!
+            self.request = NSMutableURLRequest(URL: self.url)
+            self.request.HTTPMethod = "GET"
+            self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            self.request.setValue("application/json", forHTTPHeaderField: "Accept")
+            self.items = ["hi"]
+            self.patient_list = []
+            self.tableView = tableView
         }
         
+        func update(){
+            self.session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
+            self.username = NSUserDefaults.standardUserDefaults().valueForKey("USERNAME") as NSString
+            self.get = "?session_key=\(self.session_key)"
+            self.url = NSURL(string: "http://localhost:8000/ptapi/getPatients"+get)!
+            self.request = NSMutableURLRequest(URL: self.url)
+            self.request.HTTPMethod = "GET"
+            self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            self.request.setValue("application/json", forHTTPHeaderField: "Accept")
+
+            
+        }
+        func getPatients(){
+            NSURLCache.sharedURLCache().removeAllCachedResponses()
+            self.items.removeAll()
+            self.urlData = NSURLConnection.sendSynchronousRequest(self.request, returningResponse:&self.response, error:&self.reponseError)
+            self.responseData = NSString(data:self.urlData!, encoding:NSUTF8StringEncoding)!
+            self.jsonData = NSJSONSerialization.JSONObjectWithData(self.urlData!, options:NSJSONReadingOptions.MutableContainers , error: &self.error) as? NSDictionary
+            
+            self.patient_list = self.jsonData?.valueForKey("patient_list") as [NSString]
+            for(name) in self.patient_list{
+                self.items.append(name)
+                }
+           // self.tableView?.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+            }
         
     }
     

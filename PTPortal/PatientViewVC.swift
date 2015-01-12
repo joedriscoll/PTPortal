@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import LineChart
 
 class PatientViewVC: UIViewController {
     
@@ -20,12 +19,14 @@ class PatientViewVC: UIViewController {
 
         // Do any additional setup after loading the view.
     }
-    
+    deinit{
+        println("deinitiated")
+    }
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-        patientNameLabel.text = prefs.valueForKey("CURRENT_PATIENT") as NSString + "'s Statistics"
+       // patientNameLabel.text = prefs.valueForKey("CURRENT_PATIENT") as NSString + "'s Statistics"
         var lineChart = LineChart()
-        lineChart.addLine([3, 4, 9, 11, 13, 15,7,8,2,10,0,24,6])
+        lineChart.addLine([3, 4, 9, 11, 13, 15,7,8,2,10,0,24,6],pain:[3, 4, 9, 11, 13, 15,7,8,2,10,0,24,6])
         lineChart.axisInset = 20
         lineChart.labelsXVisible = true
         lineChart.gridVisible = false

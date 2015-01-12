@@ -12,6 +12,11 @@ class LoginVC: UIViewController {
     
     @IBOutlet weak var txtUsername: UITextField!
     @IBOutlet weak var txtPassword: UITextField!
+    
+    deinit{
+        println("signin deinitated")
+        
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
