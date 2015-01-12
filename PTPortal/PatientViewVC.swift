@@ -30,7 +30,7 @@ class PatientViewVC: UIViewController {
         lineChart.axisInset = 20
         lineChart.labelsXVisible = true
         lineChart.gridVisible = false
-        lineChart.dotsVisible = false
+        lineChart.dotsVisible = true
         lineChart.numberOfGridLinesX = 5
         lineChart.labelsYVisible = true
         lineChart.numberOfGridLinesY = 5
