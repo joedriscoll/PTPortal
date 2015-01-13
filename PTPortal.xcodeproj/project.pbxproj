@@ -18,6 +18,7 @@
 		7C7057291A607C7D00AD2279 /* PatientViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7057281A607C7D00AD2279 /* PatientViewVC.swift */; };
 		7CF51E601A6365F600FD9FAC /* LineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF51E5F1A6365F600FD9FAC /* LineChart.swift */; };
 		7CF51E621A63662500FD9FAC /* DotCALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF51E611A63662500FD9FAC /* DotCALayer.swift */; };
+		7CF51E641A64E21900FD9FAC /* ExerciseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF51E631A64E21900FD9FAC /* ExerciseVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 		7C7057281A607C7D00AD2279 /* PatientViewVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatientViewVC.swift; sourceTree = "<group>"; };
 		7CF51E5F1A6365F600FD9FAC /* LineChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChart.swift; sourceTree = "<group>"; };
 		7CF51E611A63662500FD9FAC /* DotCALayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotCALayer.swift; sourceTree = "<group>"; };
+		7CF51E631A64E21900FD9FAC /* ExerciseVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExerciseVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 				7CF51E611A63662500FD9FAC /* DotCALayer.swift */,
 				7CF51E5F1A6365F600FD9FAC /* LineChart.swift */,
 				7C7057281A607C7D00AD2279 /* PatientViewVC.swift */,
+				7CF51E631A64E21900FD9FAC /* ExerciseVC.swift */,
 			);
 			path = PTPortal;
 			sourceTree = "<group>";
@@ -231,6 +234,7 @@
 				7C7057291A607C7D00AD2279 /* PatientViewVC.swift in Sources */,
 				7C648BC41A5B5D610067D539 /* ViewController.swift in Sources */,
 				7CF51E601A6365F600FD9FAC /* LineChart.swift in Sources */,
+				7CF51E641A64E21900FD9FAC /* ExerciseVC.swift in Sources */,
 				7C648BC21A5B5D610067D539 /* AppDelegate.swift in Sources */,
 				7CF51E621A63662500FD9FAC /* DotCALayer.swift in Sources */,
 				7C648BE21A5B5FD70067D539 /* LoginVC.swift in Sources */,

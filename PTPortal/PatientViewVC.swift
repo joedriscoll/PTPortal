@@ -15,6 +15,9 @@ class PatientViewVC: UIViewController {
     @IBOutlet var chart: UIView!
     let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
     @IBOutlet weak var patientNameLabel: UILabel!
+    @IBAction func goToPatientView(segue: UIStoryboardSegue) {
+        println("Called gotoPatientView: unwind action")
+    }
     
     var act_req:ActivityRequest?
     var act_g:ActivityGraph?
