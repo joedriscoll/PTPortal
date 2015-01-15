@@ -130,11 +130,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="FJi-hM-zft">
-                                <rect key="frame" x="133" y="396" width="109" height="30"/>
+                                <rect key="frame" x="37" y="397" width="300" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Asign Exercises">
+                                <state key="normal" title="Edit Assigned Exercices">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="editViewExerciseTapped:" destination="ip8-9a-Ds2" eventType="touchUpInside" id="Vop-Zd-Rv1"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Exercises" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ZLB-vQ-nvE">
                                 <rect key="frame" x="37" y="20" width="300" height="21"/>
@@ -149,7 +152,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="4vE-Qe-29h">
-                                <rect key="frame" x="157" y="455" width="61" height="30"/>
+                                <rect key="frame" x="157" y="442" width="61" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Pain Log">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -161,11 +164,15 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="backgroundView" destination="hhi-ME-yVx" id="qKw-vQ-hVG"/>
+                        <outlet property="editViewButton" destination="FJi-hM-zft" id="KQN-bY-sco"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Me0-rG-Fhi" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="E1o-PT-hgP" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1286.5" y="1327.5"/>
+            <point key="canvasLocation" x="1218.5" y="1327.5"/>
         </scene>
         <!--SignupVC-->
         <scene sceneID="bMl-6o-GGA">

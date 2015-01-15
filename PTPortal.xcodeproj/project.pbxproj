@@ -19,6 +19,7 @@
 		7CF51E601A6365F600FD9FAC /* LineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF51E5F1A6365F600FD9FAC /* LineChart.swift */; };
 		7CF51E621A63662500FD9FAC /* DotCALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF51E611A63662500FD9FAC /* DotCALayer.swift */; };
 		7CF51E641A64E21900FD9FAC /* ExerciseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF51E631A64E21900FD9FAC /* ExerciseVC.swift */; };
+		7CF51E6A1A67329F00FD9FAC /* CustomModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF51E691A67329F00FD9FAC /* CustomModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		7CF51E5F1A6365F600FD9FAC /* LineChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChart.swift; sourceTree = "<group>"; };
 		7CF51E611A63662500FD9FAC /* DotCALayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotCALayer.swift; sourceTree = "<group>"; };
 		7CF51E631A64E21900FD9FAC /* ExerciseVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExerciseVC.swift; sourceTree = "<group>"; };
+		7CF51E691A67329F00FD9FAC /* CustomModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomModels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 				7CF51E5F1A6365F600FD9FAC /* LineChart.swift */,
 				7C7057281A607C7D00AD2279 /* PatientViewVC.swift */,
 				7CF51E631A64E21900FD9FAC /* ExerciseVC.swift */,
+				7CF51E691A67329F00FD9FAC /* CustomModels.swift */,
 			);
 			path = PTPortal;
 			sourceTree = "<group>";
@@ -230,6 +233,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7CF51E6A1A67329F00FD9FAC /* CustomModels.swift in Sources */,
 				7C648BE41A5B5FE70067D539 /* SignupVC.swift in Sources */,
 				7C7057291A607C7D00AD2279 /* PatientViewVC.swift in Sources */,
 				7C648BC41A5B5D610067D539 /* ViewController.swift in Sources */,

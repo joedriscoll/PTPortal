@@ -10,12 +10,13 @@ import UIKit
 
 class PatientViewVC: UIViewController {
     
-    
+    var previous = 0
     @IBOutlet var dayLabel: UILabel!
     @IBOutlet var chart: UIView!
     let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
     @IBOutlet weak var patientNameLabel: UILabel!
     @IBAction func goToPatientView(segue: UIStoryboardSegue) {
+        previous = 1
         println("Called gotoPatientView: unwind action")
     }
     
@@ -34,12 +35,13 @@ class PatientViewVC: UIViewController {
     }
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
+        if (previous == 0){
         patientNameLabel.text = prefs.valueForKey("CURRENT_PATIENT") as NSString + "'s Statistics"
         self.act_req = ActivityRequest()
         self.act_req!.update()
         var data = self.act_req!.getData()
         self.act_g = ActivityGraph(graphDataReq: data, chart:chart, dayLabel:dayLabel)
-
+        }
         
         
         
