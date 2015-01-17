@@ -148,6 +148,7 @@ class ViewController: UIViewController {
             for(name) in self.patient_list{
                 self.items.append(name)
                 }
+            self.tableView?.reloadData()
             return 1
            // self.tableView?.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
             }

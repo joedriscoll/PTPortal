@@ -72,9 +72,25 @@ class Button: UIButton {
     
 }
 
+class ExerciseAlertLabel: UILabel {
+    
+    func setUp(text:String,frame:CGRect){
+        self.font = UIFont.systemFontOfSize(15)
+        self.text = text
+        self.frame = frame
+        self.textColor = UIColor.lightGrayColor()
+        
+        
+    }
+    
+}
+
 class ExerciseAlert: UIView, CheckBoxDelegate {
     
     var exerciseName:TextField?
+    var nameLabel:ExerciseAlertLabel?
+    var day:ExerciseAlertLabel?
+    var sets:ExerciseAlertLabel?
     var exerciseAs:TextField?
     var exerciseDone:Button?
     var exerciseCancel:Button?
@@ -89,14 +105,25 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
     }
     
     func setUp(frame:CGRect){
+        self.nameLabel = ExerciseAlertLabel()
+        self.nameLabel?.setUp("Exercise Name:",frame:CGRectMake(20, 5, 250, 30))
+        self.sets = ExerciseAlertLabel()
+        self.sets?.setUp("Sets and Reps:", frame: CGRectMake(20, 115, 250, 30))
+        self.day = ExerciseAlertLabel()
+        self.day?.setUp("Days Assigned:", frame: CGRectMake(20, 65, 250, 30))
+        self.addSubview(day!)
+        self.addSubview(nameLabel!)
+        self.addSubview(sets!)
         self.exerciseName = TextField()
-        self.exerciseName?.setUp("Name",frame:CGRectMake(20, 10, 250, 30))
+        self.exerciseName?.setUp("Name",frame:CGRectMake(20, 30, 250, 30))
         self.exerciseAs = TextField()
-        self.exerciseAs?.setUp("Sets and reps",frame:CGRectMake(20, 90, 250, 30))
+        self.exerciseAs?.setUp("Sets and reps",frame:CGRectMake(20, 140, 250, 30))
         self.exerciseDone = Button()
-        self.exerciseDone?.setUp("Done",frame: CGRectMake(190, 140, 80, 30))
+        self.exerciseDone?.setUp("Done",frame: CGRectMake(190, 190, 80, 30))
+        self.exerciseDone?.addTarget(self, action:"Done:", forControlEvents: UIControlEvents.TouchUpInside)
         self.exerciseCancel = Button()
-        self.exerciseCancel?.setUp("Cancel",frame: CGRectMake(20, 140, 80, 30))
+        self.exerciseCancel?.setUp("Cancel",frame: CGRectMake(20, 190, 80, 30))
+        self.exerciseCancel?.addTarget(self, action:"Cancel:", forControlEvents: UIControlEvents.TouchUpInside)
         self.addSubview(exerciseName!)
         self.addSubview(exerciseAs!)
         self.addSubview(exerciseDone!)
@@ -107,6 +134,20 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
         self.layer.cornerRadius = 10
         self.frame = frame
         self.boxes = createCheckboxes()
+
+        
+    }
+
+    func Done(sender:Button!){
+        println("Done")
+        self.removeFromSuperview()
+        
+    }
+    
+    func Cancel(sender:Button!){
+        
+        println("Cancel")
+        self.removeFromSuperview()
     }
     
     func createCheckboxes() -> [CheckBox] {
@@ -114,7 +155,7 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
         let lNumberOfCheckboxes = 7;
         let lCheckboxHeight: CGFloat = 20.0;
         // #2
-        var lFrame = CGRectMake(20, 50, 30, lCheckboxHeight);
+        var lFrame = CGRectMake(20, 90, 30, lCheckboxHeight);
         
         for (var counter = 0; counter < lNumberOfCheckboxes; counter++) {
             var lCheckbox = CheckBox(frame: lFrame, title: mCheckboxTitles[counter], selected: false);
@@ -140,9 +181,26 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
     
     func getStates() -> [Int]{
         var states:[Int] = []
+        for var i=0; i<self.boxes?.count; i=i+1{
+            if self.boxes?[i].selected == true{
+                states.append(1)
+            }
+            else{
+                states.append(0)
+            }
+        }
         return states
-        
-        
+    }
+    
+    func setStates(sel:[Int]){
+        for var i=0; i<self.boxes?.count; i=i+1{
+            if sel[i] == 1{
+                self.boxes?[i].selected = true
+            }
+            else{
+                self.boxes?[i].selected = false
+            }
+        }
     }
     /*
     // Only override drawRect: if you perform custom drawing.
@@ -197,6 +255,14 @@ class CheckBox: UIButton {
         var titleString = self.titleLabel?.text
         mDelegate?.didSelectCheckbox(self.selected, identifier: self.tag, title: titleString!);
     }
+}
+
+
+
+class Table: UITableView {
+    
+    
+    
 }
 /*
 // Only override drawRect: if you perform custom drawing.

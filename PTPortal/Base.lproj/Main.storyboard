@@ -150,6 +150,10 @@
                                 <rect key="frame" x="37" y="61" width="300" height="318"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="ip8-9a-Ds2" id="JWm-0H-OVI"/>
+                                    <outlet property="delegate" destination="ip8-9a-Ds2" id="G32-Xw-4B7"/>
+                                </connections>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="4vE-Qe-29h">
                                 <rect key="frame" x="157" y="442" width="61" height="30"/>
@@ -158,7 +162,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="E1o-PT-hgP" kind="unwind" unwindAction="goToPatientView:" id="MdN-rP-pFO"/>
+                                    <action selector="painLogTaped:" destination="ip8-9a-Ds2" eventType="touchUpInside" id="Smv-PA-1MK"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -167,10 +171,10 @@
                     <connections>
                         <outlet property="backgroundView" destination="hhi-ME-yVx" id="qKw-vQ-hVG"/>
                         <outlet property="editViewButton" destination="FJi-hM-zft" id="KQN-bY-sco"/>
+                        <outlet property="tableView" destination="UIF-Tt-BXr" id="XQZ-1y-5eO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Me0-rG-Fhi" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="E1o-PT-hgP" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1218.5" y="1327.5"/>
         </scene>
