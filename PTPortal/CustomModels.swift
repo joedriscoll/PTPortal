@@ -8,12 +8,11 @@
 /// checkboxes https://gottliebplanet.wordpress.com/2014/08/09/create-a-checkbox-control-in-swift/
 
 import UIKit
+import Foundation
 
 class TextField: UITextField {
-
-    
     let padding = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5);
-
+    
     func setUp(pHolder:NSString,frame:CGRect){
         self.layer.borderColor = UIColor.lightGrayColor().CGColor
         self.layer.borderWidth = 2
@@ -36,7 +35,6 @@ class TextField: UITextField {
     }
     
     private func newBounds(bounds: CGRect) -> CGRect {
-        
         var newBounds = bounds
         newBounds.origin.x += padding.left
         newBounds.origin.y += padding.top
@@ -212,7 +210,6 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
     
 }
 
-import Foundation
 @objc protocol CheckBoxDelegate {
     // #1
     func didSelectCheckbox(state: Bool, identifier: Int, title: String);
