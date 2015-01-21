@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7C133E3C1A6F4C5C00B4D727 /* CustomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C133E3B1A6F4C5B00B4D727 /* CustomColor.swift */; };
 		7C648BC21A5B5D610067D539 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C648BC11A5B5D610067D539 /* AppDelegate.swift */; };
 		7C648BC41A5B5D610067D539 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C648BC31A5B5D610067D539 /* ViewController.swift */; };
 		7C648BC71A5B5D610067D539 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C648BC51A5B5D610067D539 /* Main.storyboard */; };
@@ -33,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7C133E3B1A6F4C5B00B4D727 /* CustomColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomColor.swift; sourceTree = "<group>"; };
 		7C648BBC1A5B5D610067D539 /* PTPortal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PTPortal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C648BC01A5B5D610067D539 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7C648BC11A5B5D610067D539 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				7C7057281A607C7D00AD2279 /* PatientViewVC.swift */,
 				7CF51E631A64E21900FD9FAC /* ExerciseVC.swift */,
 				7CF51E691A67329F00FD9FAC /* CustomModels.swift */,
+				7C133E3B1A6F4C5B00B4D727 /* CustomColor.swift */,
 			);
 			path = PTPortal;
 			sourceTree = "<group>";
@@ -241,6 +244,7 @@
 				7CF51E641A64E21900FD9FAC /* ExerciseVC.swift in Sources */,
 				7C648BC21A5B5D610067D539 /* AppDelegate.swift in Sources */,
 				7CF51E621A63662500FD9FAC /* DotCALayer.swift in Sources */,
+				7C133E3C1A6F4C5C00B4D727 /* CustomColor.swift in Sources */,
 				7C648BE21A5B5FD70067D539 /* LoginVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

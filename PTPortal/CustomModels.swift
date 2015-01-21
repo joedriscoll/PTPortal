@@ -9,7 +9,31 @@
 
 import UIKit
 import Foundation
+var customColor = CustomColors()
 
+
+class blueButton:UIButton{
+
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        self.backgroundColor = customColor.firstBlue
+        self.layer.cornerRadius = 5
+        self.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+    }
+    
+}
+
+
+class redButton:UIButton{
+    
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        self.backgroundColor = customColor.red
+        self.layer.cornerRadius = 5
+        self.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+    }
+    
+}
 class TextField: UITextField {
     let padding = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5);
     
@@ -56,9 +80,10 @@ class TextField: UITextField {
 class Button: UIButton {
     
     func setUp(title:NSString,frame:CGRect){
-        self.backgroundColor = UIColor.lightGrayColor()
+        //self.backgroundColor = UIColor.lightGrayColor()
         self.setTitle(title, forState: UIControlState.Normal)
         self.frame = frame
+        self.layer.cornerRadius = 5
     }
     /*
     // Only override drawRect: if you perform custom drawing.
@@ -92,16 +117,24 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
     var exerciseAs:TextField?
     var exerciseDone:Button?
     var exerciseCancel:Button?
-    let mCheckboxTitles = ["Sun", "Mon", "Tue","Wed", "Thr", "Fri","Sat"];
+    let mCheckboxTitles = ["Mon", "Tue","Wed", "Thr", "Fri","Sat", "Sun"];
     var line = LineChart()
     var boxes:[CheckBox]?
-
+    var e_id:Int?
+    var e_post:PostReq?
+    weak var e_proc:ExerciseProc?
     
     func getBoxes()->[CheckBox]{
         
         return self.boxes!
     }
     
+    func addPost(ePP:ExerciseProc){
+        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
+        self.e_post = PostReq(post:"session_key=\(session_key)&e_id=\(self.e_id)&name=\(self.exerciseName!.text)&sets=\(self.exerciseAs!.text)&assinged_days=\(self.getStates())", url: "http://localhost:8000/ptapi/editExerciseData")
+        self.e_proc = ePP
+        
+    }
     func setUp(frame:CGRect){
         self.nameLabel = ExerciseAlertLabel()
         self.nameLabel?.setUp("Exercise Name:",frame:CGRectMake(20, 5, 250, 30))
@@ -117,9 +150,11 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
         self.exerciseAs = TextField()
         self.exerciseAs?.setUp("Sets and reps",frame:CGRectMake(20, 140, 250, 30))
         self.exerciseDone = Button()
-        self.exerciseDone?.setUp("Done",frame: CGRectMake(190, 190, 80, 30))
+        self.exerciseDone?.backgroundColor = customColor.firstBlue
+        self.exerciseDone?.setUp("Update",frame: CGRectMake(190, 190, 80, 30))
         self.exerciseDone?.addTarget(self, action:"Done:", forControlEvents: UIControlEvents.TouchUpInside)
         self.exerciseCancel = Button()
+        self.exerciseCancel?.backgroundColor = customColor.red
         self.exerciseCancel?.setUp("Cancel",frame: CGRectMake(20, 190, 80, 30))
         self.exerciseCancel?.addTarget(self, action:"Cancel:", forControlEvents: UIControlEvents.TouchUpInside)
         self.addSubview(exerciseName!)
@@ -137,13 +172,29 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
     }
 
     func Done(sender:Button!){
-        println("Done")
+        var patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString
+        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
+        if self.e_id >= 0{
+            e_post?.update("session_key=\(session_key)&e_id=\(self.e_id!)&name=\(self.exerciseName!.text)&patient_username=\(patient_username)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())", url: "http://localhost:8000/ptapi/editExerciseData")
+        }
+        else{
+            e_post?.update("session_key=\(session_key)&patient_username=\(patient_username)&name=\(self.exerciseName!.text)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())", url: "http://localhost:8000/ptapi/addNewExercise")
+        }
+        e_post?.Post(self.e_proc!)
         self.removeFromSuperview()
         
     }
     
-    func Cancel(sender:Button!){
+    func clear(){
+        self.setStates([0,0,0,0,0,0,0])
+        self.exerciseName?.text = ""
+        self.exerciseAs?.text = ""
+        self.e_id = -1
         
+    }
+    
+    func Cancel(sender:Button!){
+    
         println("Cancel")
         self.removeFromSuperview()
     }
@@ -241,8 +292,8 @@ class CheckBox: UIButton {
     // #6
     func applyStyle() {
         self.titleLabel?.font = UIFont.systemFontOfSize(14)
-        self.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal);
-        self.setTitleColor(UIColor.redColor(), forState: UIControlState.Selected);
+        self.setTitleColor(UIColor.grayColor(), forState: UIControlState.Normal);
+        self.setTitleColor(customColor.firstBlue, forState: UIControlState.Selected);
     }
     
     func onTouchUpInside(sender: UIButton) {
@@ -256,10 +307,211 @@ class CheckBox: UIButton {
 
 
 
-class Table: UITableView {
+class PostReq{
+    var url:NSURL
+    var request:NSMutableURLRequest
+    var jsonData:NSDictionary?
+    var queue:NSOperationQueue?
+    var postData:NSData?
+    var postLength:NSString?
     
+    deinit{
+        println("deleted requestttt")
+    }
     
+    init(post:NSString, url:String){
+        self.url = NSURL(string: url)!
+        self.request = NSMutableURLRequest(URL: self.url)
+        self.request.HTTPMethod = "POST"
+        self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        self.request.setValue("application/json", forHTTPHeaderField: "Accept")
+        self.queue  = NSOperationQueue()
+        self.postData = post.dataUsingEncoding(NSASCIIStringEncoding)!
+        self.postLength = String( postData!.length )
+        
+    }
     
+    func update(post:NSString, url:String){
+        self.postData = post.dataUsingEncoding(NSASCIIStringEncoding)!
+        self.postLength = String( self.postData!.length )
+        self.url = NSURL(string: url)!
+        self.request = NSMutableURLRequest(URL: self.url)
+        self.request.HTTPMethod = "POST"
+        self.request.HTTPBody = self.postData
+        self.request.setValue(self.postLength, forHTTPHeaderField: "Content-Length")
+        self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        self.request.setValue("application/json", forHTTPHeaderField: "Accept")
+    }
+    
+    func Post(obj:Processor) -> Int {
+        println("ihiehsiohfeoieasnfvoiaensoivn")
+        var success:Int = 0
+        println(self.request.HTTPBody)
+        NSURLCache.sharedURLCache().removeAllCachedResponses()
+        NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler: { (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
+            if (error != nil) {
+                println("API error: \(error), \(error.userInfo)")
+            }
+            else{
+                var jsonError:NSError?
+                
+                self.jsonData = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as? NSDictionary
+                obj.processData(self.jsonData!)
+                if (jsonError != nil) {
+                    println("Error parsing json: \(jsonError)")
+                    success = 0
+                }
+                if (self.jsonData?.valueForKey("success") as Int == 1){
+                    success = 1
+                }
+                else{
+                    success = 0
+                }
+            }
+        })
+        return success
+    }
+}
+
+class Processor {
+    func processData(data:NSDictionary){
+        println(data)
+    }
+}
+
+class asProcessor:Processor{
+    deinit{
+        println("process deleted")
+    }
+    override func processData(data: NSDictionary) {
+        super.processData(data)
+        var success:NSInteger = data.valueForKey("success") as NSInteger
+        if(success == 1)
+        {
+            NSLog("Sign Up SUCCESS");
+        } else {
+            var error_msg:NSString
+            if data["error_message"] as? NSString != nil {
+                error_msg = data["error_message"] as NSString
+            } else {
+                error_msg = "PT Username Not Found"
+            }
+        }
+    }
+}
+
+
+class GetReq{
+    var url:NSURL
+    var request:NSMutableURLRequest
+    var jsonData:NSDictionary?
+    var queue:NSOperationQueue?
+    var postData:NSData?
+    var postLength:NSString?
+    
+    deinit{
+        println("deleted Getrequestttt")
+    }
+    
+    init(post:NSString, url:String){
+        self.url = NSURL(string: url+post)!
+        self.request = NSMutableURLRequest(URL: self.url)
+        self.request.HTTPMethod = "GET"
+        self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        self.request.setValue("application/json", forHTTPHeaderField: "Accept")
+        self.queue  = NSOperationQueue()
+        
+    }
+    
+    func update(post:NSString, url:String){
+        self.url = NSURL(string: url+post)!
+        self.request = NSMutableURLRequest(URL: self.url)
+        self.request.HTTPMethod = "GET"
+        self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        self.request.setValue("application/json", forHTTPHeaderField: "Accept")
+    }
+    
+    func Get(obj:Processor) -> Int {
+        var success:Int = 0
+        println(self.request.HTTPBody)
+        NSURLCache.sharedURLCache().removeAllCachedResponses()
+        NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler: { (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
+            if (error != nil) {
+                println("API error: \(error), \(error.userInfo)")
+            }
+            else{
+                var jsonError:NSError?
+                
+                self.jsonData = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as? NSDictionary
+                println(self.url)
+                obj.processData(self.jsonData!)
+                if (jsonError != nil) {
+                    println("Error parsing json: \(jsonError)")
+                    success = 0
+                }
+                if (self.jsonData?.valueForKey("success") as Int == 1){
+                    success = 1
+                }
+                else{
+                    success = 0
+                }
+            }
+        })
+        return success
+    }
+}
+
+class ExerciseProc: Processor{
+    var table_items:[String]
+    weak var table:UITableView?
+    var all_exercises:[String]
+    var current_exercises:[String]
+    var all_exercises_dic:[NSDictionary]
+    var current_exercises_dic:[NSDictionary]
+    var table_dic:[NSDictionary]
+    var lis:Int?
+    
+    init(t:UITableView){
+        self.table_items = []
+        self.table_dic = []
+        self.all_exercises = []
+        self.current_exercises = []
+        self.all_exercises_dic = []
+        self.current_exercises_dic = []
+        self.table = t
+        self.lis = 0
+    }
+    
+    override func processData(data: NSDictionary) {
+        super.processData(data)
+        self.all_exercises = []
+        self.current_exercises = []
+        self.all_exercises_dic = data.valueForKey("all_exercises") as [NSDictionary]
+        self.current_exercises_dic = data.valueForKey("current_exercises") as [NSDictionary]
+        for var a = 0;a < self.all_exercises_dic.count; a = a+1{
+            self.all_exercises.append(self.all_exercises_dic[a].valueForKey("name") as String)
+        }
+        for var a = 0;a < self.current_exercises_dic.count; a = a+1{
+            var all_data:String = (self.current_exercises_dic[a].valueForKey("e_date") as String) + ": " + (self.current_exercises_dic[a].valueForKey("name") as String)
+            self.current_exercises.append(all_data)
+        }
+        self.all_exercises.append("Add Exercise")
+        self.all_exercises_dic.append(Dictionary<String,String>())
+        dispatch_async(dispatch_get_main_queue()) {
+            if self.lis == 0{
+                self.table_items = self.current_exercises
+                self.table_dic = self.current_exercises_dic
+            }
+            else{
+                self.table_items = self.all_exercises
+                self.table_dic = self.all_exercises_dic
+                
+            }
+            self.table?.reloadData()
+            return Void()
+        }
+        return Void()
+    }
 }
 /*
 // Only override drawRect: if you perform custom drawing.

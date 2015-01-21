@@ -11,40 +11,41 @@ import UIKit
 class PatientViewVC: UIViewController {
     
     var previous = 0
+    var actGet:GetReq?
+    var act_g:ActivityGraph?
+    var actProc:ActProc?
     @IBOutlet var dayLabel: UILabel!
     @IBOutlet var chart: UIView!
-    let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
     @IBOutlet weak var patientNameLabel: UILabel!
     @IBAction func goToPatientView(segue: UIStoryboardSegue) {
         previous = 1
         println("Called gotoPatientView: unwind action")
     }
     
-    var act_req:ActivityRequest?
-    var act_g:ActivityGraph?
     
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        actGet = GetReq(post: "?session_key=None&patient_username=None", url: "http://localhost:8000/ptapi/getActivity")
+        self.act_g = ActivityGraph()
+        self.actProc = ActProc(lab: dayLabel,cha:chart, graph:self.act_g!)
+
     
         // Do any additional setup after loading the view.
     }
-    deinit{
-        println("deinitiated")
-    }
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
         if (previous == 0){
-        patientNameLabel.text = prefs.valueForKey("CURRENT_PATIENT") as NSString + "'s Statistics"
-        self.act_req = ActivityRequest()
-        self.act_req!.update()
-        var data = self.act_req!.getData()
-        self.act_g = ActivityGraph(graphDataReq: data, chart:chart, dayLabel:dayLabel)
+            var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
+            var patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString
+            patientNameLabel.text = patient_username + "'s Statistics"
+            self.actGet?.update("?session_key=\(session_key)&patient_username=\(patient_username)", url: "http://localhost:8000/ptapi/getActivity")
+            self.actGet?.Get(self.actProc!)
+            
+            //var data = self.actProc.getData()
+            //self.act_g = ActivityGraph(graphDataReq: data, chart:chart, dayLabel:dayLabel)
         }
-        
-        
-        
         // Do any additional setup after loading the view.
     }
     
@@ -58,33 +59,46 @@ class PatientViewVC: UIViewController {
         var prevViewAlert:UIAlertView = UIAlertView()
         
         
-        
-        init(graphDataReq:[NSDictionary], chart:UIView, dayLabel:UILabel){
-            self.lineChart = LineChart()
-            self.graph_data = graphDataReq
-            self.view_index = graphDataReq.count - 1
-            self.current_dic = self.graph_data[self.view_index]
-            self.lineChart.addLine(self.current_dic.valueForKey("data")?.valueForKey("activity") as [CGFloat],pain:self.current_dic.valueForKey("data")?.valueForKey("pain") as [CGFloat])
-            lineChart.axisInset = 20
-            lineChart.labelsXVisible = true
-            lineChart.gridVisible = false
-            lineChart.dotsVisible = true
-            lineChart.numberOfGridLinesX = 5
-            lineChart.labelsYVisible = true
-            lineChart.numberOfGridLinesY = 5
-            lineChart.frame = CGRect(x: 20, y: 60, width: 300, height: 200)
-            chart.addSubview(lineChart)
-            dayLabel.text = self.current_dic.valueForKey("name") as NSString
-            self.dayLabelString = dayLabel.text!
-            self.nextViewAlert.title = "No Data Available After " + self.dayLabelString
-            self.nextViewAlert.message = "You have reached the most current data available."
-            self.nextViewAlert.addButtonWithTitle("OK")
-            self.prevViewAlert.title = "No Data Available Before " + self.dayLabelString
-            self.prevViewAlert.message = "You have reached the oldest data available."
-            self.prevViewAlert.addButtonWithTitle("OK")
-
-
+        deinit{
             
+            println("destryoing activity graph")
+        }
+        init()
+        {
+            
+            self.graph_data = []
+            self.view_index = 0
+            self.current_dic = Dictionary<String, String>()
+            self.dayLabelString = ""
+        }
+        
+        func create(graphDataReq:[NSDictionary], chart:UIView, dayLabel:UILabel){
+            dispatch_async(dispatch_get_main_queue()) {
+                self.lineChart = LineChart()
+                self.graph_data = graphDataReq
+                self.view_index = graphDataReq.count - 1
+                self.current_dic = self.graph_data[self.view_index]
+                self.lineChart.addLine(self.current_dic.valueForKey("data")?.valueForKey("activity") as [CGFloat],pain:self.current_dic.valueForKey("data")?.valueForKey("pain") as [CGFloat])
+                self.lineChart.axisInset = 20
+                self.lineChart.labelsXVisible = true
+                self.lineChart.gridVisible = false
+                self.lineChart.dotsVisible = true
+                self.lineChart.numberOfGridLinesX = 5
+                self.lineChart.labelsYVisible = true
+                self.lineChart.numberOfGridLinesY = 5
+                self.lineChart.frame = CGRect(x: 20, y: 60, width: 300, height: 200)
+            
+                chart.addSubview(self.lineChart)
+                dayLabel.text = self.current_dic.valueForKey("name") as NSString
+                self.dayLabelString = dayLabel.text!
+
+                self.nextViewAlert.title = "No Data Available After " + self.dayLabelString
+                self.nextViewAlert.message = "You have reached the most current data available."
+                self.nextViewAlert.addButtonWithTitle("OK")
+                self.prevViewAlert.title = "No Data Available Before " + self.dayLabelString
+                self.prevViewAlert.message = "You have reached the oldest data available."
+                self.prevViewAlert.addButtonWithTitle("OK")
+            }
         }
     
         func Next(dayLabel:UILabel){
@@ -116,10 +130,6 @@ class PatientViewVC: UIViewController {
                 self.prevViewAlert.title = "No Data Available Before " + self.dayLabelString
             }
         }
-
-        
-        
-        
     }
 
     @IBAction func nextTapped(sender: UIButton) {
@@ -130,66 +140,36 @@ class PatientViewVC: UIViewController {
         self.act_g!.Prev(dayLabel)
     }
     
-    class ActivityRequest{
-        
-        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
-        var patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString
-        var get:NSString
-        var url:NSURL
-        var request:NSMutableURLRequest
-        var reponseError: NSError?
-        var response: NSURLResponse?
-        var urlData: NSData?
-        weak var responseData:NSString?
-        var error: NSError?
-        var jsonData:NSDictionary?
+    class ActProc:Processor{
+        weak var dayLabel: UILabel?
+        weak var chart: UIView?
+        weak var graph:ActivityGraph?
+        var data:NSDictionary?
         
         
-        init(){
-            println("initialized request")
-            self.get = "?session_key=\(self.session_key)"
-            self.url = NSURL(string: "http://localhost:8000/ptapi/getPatients"+get)!
-            self.request = NSMutableURLRequest(URL: self.url)
-            self.request.HTTPMethod = "GET"
-            self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            self.request.setValue("application/json", forHTTPHeaderField: "Accept")
+        deinit{
+            
+            println("destryoing actproc")
         }
-        
-        func update(){
-            self.session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
-            self.patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString
-            
-            self.get = "?session_key=\(self.session_key)&patient_username=\(self.patient_username)"
-            self.url = NSURL(string: "http://localhost:8000/ptapi/getActivity"+get)!
-            self.request = NSMutableURLRequest(URL: self.url)
-            self.request.HTTPMethod = "GET"
-            self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            self.request.setValue("application/json", forHTTPHeaderField: "Accept")
-            
+        init(lab:UILabel, cha:UIView, graph:ActivityGraph){
+            self.chart = cha
+            self.dayLabel = lab
+            self.graph = graph
             
         }
-        func getData() -> [NSDictionary] {
-            NSURLCache.sharedURLCache().removeAllCachedResponses()
-            self.urlData = NSURLConnection.sendSynchronousRequest(self.request, returningResponse:&self.response, error:&self.reponseError)
-            self.responseData = NSString(data:self.urlData!, encoding:NSUTF8StringEncoding)!
-            self.jsonData = NSJSONSerialization.JSONObjectWithData(self.urlData!, options:NSJSONReadingOptions.MutableContainers , error: &self.error) as? NSDictionary
-            println(self.jsonData)
-            var graphs:[NSDictionary] = self.jsonData?.valueForKey("graphs") as [NSDictionary]
-            
-            return graphs
-            
-            // self.tableView?.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        override func processData(data: NSDictionary) {
+            super.processData(data)
+            self.data = data
+            var graphing:[NSDictionary] = self.data?.valueForKey("graphs") as [NSDictionary]
+            self.graph?.create(graphing, chart:self.chart!, dayLabel:self.dayLabel!)
         }
-        
     }
-
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
     /*
     // MARK: - Navigation
 
