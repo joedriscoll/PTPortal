@@ -14,6 +14,7 @@ class SignupVC: UIViewController {
     @IBOutlet weak var txtPassword: UITextField!
     @IBOutlet weak var txtEmail: UITextField!
     @IBOutlet weak var txtConfirm: UITextField!
+    var c = Connect()
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -54,7 +55,7 @@ class SignupVC: UIViewController {
             
             NSLog("PostData: %@",post);
             
-            var url:NSURL = NSURL(string: "http://localhost:8000/ptapi/register")!
+            var url:NSURL = NSURL(string: c.ip+"/ptapi/register")!
             
             var postData:NSData = post.dataUsingEncoding(NSASCIIStringEncoding)!
             

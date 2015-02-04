@@ -15,6 +15,7 @@ class ExerciseVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var editView: ExerciseAlert?
     var eProc:ExerciseProc?
     var eReq:GetReq?
+    var c = Connect()
     
     @IBOutlet var editViewButton: UIButton!
     override func viewDidLoad() {
@@ -26,7 +27,7 @@ class ExerciseVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         //tableView.layer.borderWidth = 2
         //tableView.layer.borderColor = UIColor.blackColor().CGColor
         
-        self.eReq = GetReq(post: "?session_key=None", url: "http://localhost:8000/ptapi/patientsExerciseData")
+        self.eReq = GetReq(post: "?session_key=None", url: c.ip+"/ptapi/patientsExerciseData")
                 // Do any additional setup after loading the view.
     }
     
@@ -35,7 +36,7 @@ class ExerciseVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
         var username = NSUserDefaults.standardUserDefaults().valueForKey("USERNAME") as NSString
         var patient_name = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString
-        self.eReq?.update("?session_key=\(session_key)&patient_username=\(patient_name)", url: "http://localhost:8000/ptapi/patientsExerciseData")
+        self.eReq?.update("?session_key=\(session_key)&patient_username=\(patient_name)", url: c.ip+"/ptapi/patientsExerciseData")
         self.eReq?.Get(self.eProc!)
         self.eProc?.table_items = self.eProc!.current_exercises
         self.editView?.addPost(self.eProc!)

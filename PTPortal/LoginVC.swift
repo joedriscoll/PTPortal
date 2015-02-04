@@ -12,7 +12,7 @@ class LoginVC: UIViewController {
     
     @IBOutlet weak var txtUsername: UITextField!
     @IBOutlet weak var txtPassword: UITextField!
-    
+    var c = Connect()
     deinit{
         println("signin deinitated")
         
@@ -45,7 +45,7 @@ class LoginVC: UIViewController {
             var post: NSString = "username=\(username)&password=\(password)"
             
             NSLog("PostData: %@",post);
-            var url:NSURL = NSURL(string: "http://localhost:8000/ptapi/login")!
+            var url:NSURL = NSURL(string: c.ip+"/ptapi/login")!
             var postData:NSData = post.dataUsingEncoding(NSASCIIStringEncoding)!
             
             var postLength:NSString = String( postData.length )

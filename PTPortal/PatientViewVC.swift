@@ -14,6 +14,7 @@ class PatientViewVC: UIViewController {
     var actGet:GetReq?
     var act_g:ActivityGraph?
     var actProc:ActProc?
+    var c = Connect()
     @IBOutlet var dayLabel: UILabel!
     @IBOutlet var chart: UIView!
     @IBOutlet weak var patientNameLabel: UILabel!
@@ -26,7 +27,7 @@ class PatientViewVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        actGet = GetReq(post: "?session_key=None&patient_username=None", url: "http://localhost:8000/ptapi/getActivity")
+        actGet = GetReq(post: "?session_key=None&patient_username=None", url: c.ip+"/ptapi/getActivity")
         self.act_g = ActivityGraph()
         self.actProc = ActProc(lab: dayLabel,cha:chart, graph:self.act_g!)
 
@@ -40,7 +41,7 @@ class PatientViewVC: UIViewController {
             var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
             var patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString
             patientNameLabel.text = patient_username + "'s Statistics"
-            self.actGet?.update("?session_key=\(session_key)&patient_username=\(patient_username)", url: "http://localhost:8000/ptapi/getActivity")
+            self.actGet?.update("?session_key=\(session_key)&patient_username=\(patient_username)", url: c.ip+"/ptapi/getActivity")
             self.actGet?.Get(self.actProc!)
             
             //var data = self.actProc.getData()

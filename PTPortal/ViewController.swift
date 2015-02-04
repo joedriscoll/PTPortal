@@ -12,6 +12,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var logOutButton: UIButton!
     @IBOutlet weak var tableView: UITableView?
     @IBOutlet weak var usernameLabel: UILabel!
+    
     @IBAction func goToHome(segue: UIStoryboardSegue) {
         
         println("Called gotoHome: unwind action")
@@ -90,7 +91,7 @@ class ViewController: UIViewController {
     }
     
     class PatientRequest{
-
+        var c = Connect()
         var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
         var username = NSUserDefaults.standardUserDefaults().valueForKey("USERNAME") as NSString
         var get:NSString
@@ -110,7 +111,7 @@ class ViewController: UIViewController {
         init(tableView:UITableView){
             println("initialized request")
             self.get = "?session_key=\(self.session_key)"
-            self.url = NSURL(string: "http://localhost:8000/ptapi/getPatients"+get)!
+            self.url = NSURL(string: c.ip+"/ptapi/getPatients"+get)!
             self.request = NSMutableURLRequest(URL: self.url)
             self.request.HTTPMethod = "GET"
             self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
@@ -124,7 +125,7 @@ class ViewController: UIViewController {
             self.session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
             self.username = NSUserDefaults.standardUserDefaults().valueForKey("USERNAME") as NSString
             self.get = "?session_key=\(self.session_key)"
-            self.url = NSURL(string: "http://localhost:8000/ptapi/getPatients"+get)!
+            self.url = NSURL(string: c.ip+"/ptapi/getPatients"+get)!
             self.request = NSMutableURLRequest(URL: self.url)
             self.request.HTTPMethod = "GET"
             self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")

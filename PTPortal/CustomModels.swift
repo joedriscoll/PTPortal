@@ -11,6 +11,10 @@ import UIKit
 import Foundation
 var customColor = CustomColors()
 
+class Connect {
+    let ip:NSString = "http://54.200.62.58"
+}
+var c = Connect()
 
 class blueButton:UIButton{
 
@@ -131,7 +135,7 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
     
     func addPost(ePP:ExerciseProc){
         var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
-        self.e_post = PostReq(post:"session_key=\(session_key)&e_id=\(self.e_id)&name=\(self.exerciseName!.text)&sets=\(self.exerciseAs!.text)&assinged_days=\(self.getStates())", url: "http://localhost:8000/ptapi/editExerciseData")
+        self.e_post = PostReq(post:"session_key=\(session_key)&e_id=\(self.e_id)&name=\(self.exerciseName!.text)&sets=\(self.exerciseAs!.text)&assinged_days=\(self.getStates())", url: c.ip+"/ptapi/editExerciseData")
         self.e_proc = ePP
         
     }
@@ -175,10 +179,10 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
         var patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString
         var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
         if self.e_id >= 0{
-            e_post?.update("session_key=\(session_key)&e_id=\(self.e_id!)&name=\(self.exerciseName!.text)&patient_username=\(patient_username)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())", url: "http://localhost:8000/ptapi/editExerciseData")
+            e_post?.update("session_key=\(session_key)&e_id=\(self.e_id!)&name=\(self.exerciseName!.text)&patient_username=\(patient_username)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())", url: c.ip+"/ptapi/editExerciseData")
         }
         else{
-            e_post?.update("session_key=\(session_key)&patient_username=\(patient_username)&name=\(self.exerciseName!.text)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())", url: "http://localhost:8000/ptapi/addNewExercise")
+            e_post?.update("session_key=\(session_key)&patient_username=\(patient_username)&name=\(self.exerciseName!.text)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())", url: c.ip+"/ptapi/addNewExercise")
         }
         e_post?.Post(self.e_proc!)
         self.removeFromSuperview()
