@@ -76,7 +76,7 @@ class SignupVC: UIViewController {
             
             if ( urlData != nil ) {
                 let res = response as NSHTTPURLResponse!;
-                
+                println(res)
                 NSLog("Response code: %ld", res.statusCode);
                 
                 if (res.statusCode >= 200 && res.statusCode < 300)
@@ -86,6 +86,7 @@ class SignupVC: UIViewController {
                     NSLog("Response ==> %@", responseData);
                     
                     var error: NSError?
+                    println(responseData)
                     
                     let jsonData:NSDictionary = NSJSONSerialization.JSONObjectWithData(urlData!, options:NSJSONReadingOptions.MutableContainers , error: &error) as NSDictionary
                     

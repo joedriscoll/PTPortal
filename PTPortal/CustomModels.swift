@@ -13,6 +13,7 @@ var customColor = CustomColors()
 
 class Connect {
     let ip:NSString = "http://54.200.62.58"
+    //let ip:NSString = "http://localhost:8000"
 }
 var c = Connect()
 
@@ -358,8 +359,14 @@ class PostReq{
             }
             else{
                 var jsonError:NSError?
-                
+                println(self.url)
+                println(response)
+                println("hihihi")
+                println("hhhhhh")
+                println("aaaaa")
                 self.jsonData = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as? NSDictionary
+                println(error)
+                println(self.jsonData!)
                 obj.processData(self.jsonData!)
                 if (jsonError != nil) {
                     println("Error parsing json: \(jsonError)")
@@ -444,8 +451,9 @@ class GetReq{
                 println("API error: \(error), \(error.userInfo)")
             }
             else{
+
                 var jsonError:NSError?
-                
+                println(data!)
                 self.jsonData = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as? NSDictionary
                 println(self.url)
                 obj.processData(self.jsonData!)
