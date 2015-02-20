@@ -33,6 +33,7 @@ class ExerciseVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
+
         var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
         var username = NSUserDefaults.standardUserDefaults().valueForKey("USERNAME") as NSString
         var patient_name = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString

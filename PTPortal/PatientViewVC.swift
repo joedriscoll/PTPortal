@@ -24,7 +24,6 @@ class PatientViewVC: UIViewController {
     }
     
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         actGet = GetReq(post: "?session_key=None&patient_username=None", url: c.ip+"/ptapi/getActivity")
@@ -41,7 +40,9 @@ class PatientViewVC: UIViewController {
             var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
             var patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString
             patientNameLabel.text = patient_username + "'s Statistics"
-            self.actGet?.update("?session_key=\(session_key)&patient_username=\(patient_username)", url: c.ip+"/ptapi/getActivity")
+            var format = NSDateFormatter()
+            format.dateFormat = "yyyy-MM-dd"
+            self.actGet?.update("?session_key=\(session_key)&patient_username=\(patient_username)&date=\(format.stringFromDate(NSDate()))", url: c.ip+"/ptapi/getActivity")
             self.actGet?.Get(self.actProc!)
             
             //var data = self.actProc.getData()
