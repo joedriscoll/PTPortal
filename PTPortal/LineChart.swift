@@ -31,6 +31,8 @@ func - (left: Array<CGFloat>, right: Array<CGFloat>) -> Array<CGFloat> {
 class LineChart: UIControl {
     
     // default configuration
+    weak var painA: PainAlert?
+    weak var background: UIView?
     var gridVisible = true
     var axesVisible = true
     var dotsVisible = true
@@ -76,6 +78,7 @@ class LineChart: UIControl {
     var dataStore: Array<Array<CGFloat>> = []
     var painDataStore: Array<Array<CGFloat>> = []
     var dotsDataStore: Array<Array<DotCALayer>> = []
+    var extraDataStore: Array<Array<Array<CGFloat>>> = []
     var lineLayerStore: Array<CAShapeLayer> = []
     var colors: Array<UIColor> = []
     
@@ -83,8 +86,8 @@ class LineChart: UIControl {
     
     
     override init(frame: CGRect) {
+
         super.init(frame: frame)
-        
         self.backgroundColor = UIColor.clearColor()
         
         // category10 colors from d3 - https://github.com/mbostock/d3/wiki/Ordinal-Scales
@@ -102,7 +105,11 @@ class LineChart: UIControl {
         ]
     }
     
-    
+    func transferViews(pain:PainAlert, background: UIView) {
+        self.painA = pain
+        self.background = background
+        
+    }
     
     convenience override init() {
         self.init(frame: CGRectZero)
@@ -272,6 +279,10 @@ class LineChart: UIControl {
     * Highlight data points at index.
     */
     func highlightDataPoints(index: Int) {
+        var format = NSDateFormatter()
+        format.dateFormat = "MM/dd/yyyy"
+        var hourf = NSDateFormatter()
+        hourf.dateFormat = "HH"
         for (lineIndex, dotsData) in enumerate(dotsDataStore) {
             // make all dots white again
             for dot in dotsData {
@@ -287,6 +298,15 @@ class LineChart: UIControl {
                 dot = dotsData[index]
             }
             dot.backgroundColor = lightenUIColor(colors[lineIndex]).CGColor
+        }
+        println(extraDataStore)
+        for (lineIndex, extraData) in enumerate(extraDataStore) {
+            var eData = extraData[index]
+            if self.painDataStore[lineIndex][index] > 0.5  && self.painA!.superview == nil {
+                self.painA?.update(eData, frame: CGRectMake(20.0, 100.0, 300.0, 200.0))
+                println(eData)
+                self.background?.addSubview(self.painA!)
+            }
         }
     }
     
@@ -599,9 +619,10 @@ class LineChart: UIControl {
     /**
     * Add line chart
     */
-    func addLine(data: Array<CGFloat>, pain: Array<CGFloat>) {
+    func addLine(data: Array<CGFloat>, pain: Array<CGFloat>, extradata: Array<Array<CGFloat>>) {
         self.dataStore.append(data)
         self.painDataStore.append(pain)
+        self.extraDataStore.append(extradata)
         self.setNeedsDisplay()
     }
     
@@ -625,6 +646,7 @@ class LineChart: UIControl {
         // clear data
         dataStore.removeAll()
         painDataStore.removeAll()
+        extraDataStore.removeAll()
         self.setNeedsDisplay()
     }
 }

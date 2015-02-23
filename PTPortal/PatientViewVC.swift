@@ -29,6 +29,7 @@ class PatientViewVC: UIViewController {
         actGet = GetReq(post: "?session_key=None&patient_username=None", url: c.ip+"/ptapi/getActivity")
         self.act_g = ActivityGraph()
         self.actProc = ActProc(lab: dayLabel,cha:chart, graph:self.act_g!)
+        
 
     
         // Do any additional setup after loading the view.
@@ -54,7 +55,7 @@ class PatientViewVC: UIViewController {
     class ActivityGraph{
         var graph_data:[NSDictionary]
         var view_index:Int
-        var lineChart = LineChart()
+        var lineChart: LineChart?
         var current_dic: NSDictionary
         var dayLabelString:NSString
         var nextViewAlert:UIAlertView = UIAlertView()
@@ -74,23 +75,25 @@ class PatientViewVC: UIViewController {
             self.dayLabelString = ""
         }
         
-        func create(graphDataReq:[NSDictionary], chart:UIView, dayLabel:UILabel){
+        func create(graphDataReq:[NSDictionary], chart:UIView, dayLabel:UILabel, pain:PainAlert){
             dispatch_async(dispatch_get_main_queue()) {
                 self.lineChart = LineChart()
+                self.lineChart?.transferViews(pain, background: chart)
                 self.graph_data = graphDataReq
                 self.view_index = graphDataReq.count - 1
                 self.current_dic = self.graph_data[self.view_index]
-                self.lineChart.addLine(self.current_dic.valueForKey("data")?.valueForKey("activity") as [CGFloat],pain:self.current_dic.valueForKey("data")?.valueForKey("pain") as [CGFloat])
-                self.lineChart.axisInset = 20
-                self.lineChart.labelsXVisible = true
-                self.lineChart.gridVisible = false
-                self.lineChart.dotsVisible = true
-                self.lineChart.numberOfGridLinesX = 5
-                self.lineChart.labelsYVisible = true
-                self.lineChart.numberOfGridLinesY = 5
-                self.lineChart.frame = CGRect(x: 20, y: 60, width: 300, height: 200)
+                var ll = self.current_dic.valueForKey("data")!.valueForKey("data")! as Array<Array<CGFloat>>
+                self.lineChart?.addLine(self.current_dic.valueForKey("data")?.valueForKey("activity") as [CGFloat],pain:self.current_dic.valueForKey("data")?.valueForKey("pain") as [CGFloat], extradata: self.current_dic.valueForKey("data")!.valueForKey("data") as Array<Array<CGFloat>>)
+                self.lineChart?.axisInset = 20
+                self.lineChart?.labelsXVisible = true
+                self.lineChart?.gridVisible = false
+                self.lineChart?.dotsVisible = true
+                self.lineChart?.numberOfGridLinesX = 5
+                self.lineChart?.labelsYVisible = true
+                self.lineChart?.numberOfGridLinesY = 5
+                self.lineChart?.frame = CGRect(x: 20, y: 60, width: 300, height: 200)
             
-                chart.addSubview(self.lineChart)
+                chart.addSubview(self.lineChart!)
                 dayLabel.text = self.current_dic.valueForKey("name") as NSString
                 self.dayLabelString = dayLabel.text!
 
@@ -108,10 +111,10 @@ class PatientViewVC: UIViewController {
                 self.nextViewAlert.show()
             }
             else{
-                self.lineChart.clear()
+                self.lineChart?.clear()
                 self.view_index = self.view_index + 1
                 self.current_dic = self.graph_data[self.view_index]
-                self.lineChart.addLine(self.current_dic.valueForKey("data")?.valueForKey("activity") as [CGFloat],pain:self.current_dic.valueForKey("data")?.valueForKey("pain") as [CGFloat])
+                self.lineChart?.addLine(self.current_dic.valueForKey("data")?.valueForKey("activity") as [CGFloat],pain:self.current_dic.valueForKey("data")?.valueForKey("pain") as [CGFloat], extradata: self.current_dic.valueForKey("data")?.valueForKey("data") as Array<Array<CGFloat>>)
                 dayLabel.text = self.current_dic.valueForKey("name") as NSString
                 self.dayLabelString = dayLabel.text!
                 self.nextViewAlert.title = "No Data Available After " + self.dayLabelString
@@ -123,10 +126,10 @@ class PatientViewVC: UIViewController {
                 self.prevViewAlert.show()
             }
             else{
-                self.lineChart.clear()
+                self.lineChart?.clear()
                 self.view_index = self.view_index - 1
                 self.current_dic = self.graph_data[self.view_index]
-                self.lineChart.addLine(self.current_dic.valueForKey("data")?.valueForKey("activity") as [CGFloat],pain:self.current_dic.valueForKey("data")?.valueForKey("pain") as [CGFloat])
+                self.lineChart?.addLine(self.current_dic.valueForKey("data")?.valueForKey("activity") as [CGFloat],pain:self.current_dic.valueForKey("data")?.valueForKey("pain") as [CGFloat], extradata: self.current_dic.valueForKey("data")?.valueForKey("data") as Array<Array<CGFloat>>)
                 dayLabel.text = self.current_dic.valueForKey("name") as NSString
                 self.dayLabelString = dayLabel.text!
                 self.prevViewAlert.title = "No Data Available Before " + self.dayLabelString
@@ -147,6 +150,7 @@ class PatientViewVC: UIViewController {
         weak var chart: UIView?
         weak var graph:ActivityGraph?
         var data:NSDictionary?
+        var pain:PainAlert?
         
         
         deinit{
@@ -157,13 +161,16 @@ class PatientViewVC: UIViewController {
             self.chart = cha
             self.dayLabel = lab
             self.graph = graph
+            self.pain = PainAlert()
+         
+            self.pain?.setup([0,0,0,0,0,0,0], frame: CGRectMake(30.0, 100.0, 300.0, 200.0))
             
         }
         override func processData(data: NSDictionary) {
             super.processData(data)
             self.data = data
             var graphing:[NSDictionary] = self.data?.valueForKey("graphs") as [NSDictionary]
-            self.graph?.create(graphing, chart:self.chart!, dayLabel:self.dayLabel!)
+            self.graph?.create(graphing, chart:self.chart!, dayLabel:self.dayLabel!, pain:self.pain!)
         }
     }
 

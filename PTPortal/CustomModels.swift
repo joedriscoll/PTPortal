@@ -113,6 +113,75 @@ class ExerciseAlertLabel: UILabel {
     
 }
 
+class PainAlert: UIView {
+    let painDescription = ["Throb", "Burn", "Sharp", "Ache"]
+    var painAttributes: ExerciseAlertLabel?
+    var painLevel: ExerciseAlertLabel?
+    var attributeText: ExerciseAlertLabel?
+    var levelText: ExerciseAlertLabel?
+    var painTitle: ExerciseAlertLabel?
+    var done: Button?
+    
+    func setup(data:Array<CGFloat>, frame:CGRect){
+        var tmpString = ""
+        for var index = 0; index < 4; ++index {
+            if data[index] as CGFloat > 0.5{
+                tmpString = tmpString + " " + painDescription[index]
+            }
+        }
+        //tmpString.substringFromIndex(advance(tmpString.startIndex,1))
+        self.painTitle = ExerciseAlertLabel()
+        self.painTitle?.setUp("Pain Recorded", frame: CGRectMake(80, 10, 250, 30))
+        self.painTitle!.textColor = UIColor.blackColor()
+        self.painTitle!.font = UIFont.systemFontOfSize(20)
+        self.attributeText = ExerciseAlertLabel()
+        self.attributeText!.setUp("Pain Attributes:", frame: CGRectMake(20, 45, 250, 30))
+        self.painAttributes = ExerciseAlertLabel()
+        self.painAttributes?.setUp(tmpString, frame: CGRectMake(20, 60, 250, 30))
+        self.attributeText?.textColor = UIColor.blackColor()
+        self.levelText = ExerciseAlertLabel()
+        self.levelText!.setUp("Pain Level", frame:CGRectMake(20, 85, 250, 30))
+        self.painLevel = ExerciseAlertLabel()
+        self.painLevel?.setUp(data[4].description, frame: CGRectMake(20, 100, 250, 30))
+        self.levelText?.textColor = UIColor.blackColor()
+        self.done = Button()
+        self.done?.setUp("Ok", frame: CGRectMake(100, 140, 100, 30))
+        self.done?.backgroundColor = customColor.red
+        self.done?.addTarget(self, action:"Done:", forControlEvents: UIControlEvents.TouchUpInside)
+        self.addSubview(self.painTitle!)
+        self.addSubview(self.attributeText!)
+        self.addSubview(self.painAttributes!)
+        self.addSubview(self.levelText!)
+        self.addSubview(self.painLevel!)
+        self.addSubview(self.done!)
+        self.backgroundColor = UIColor.whiteColor()
+        self.layer.borderColor = UIColor.blackColor().CGColor
+        self.layer.borderWidth = 2.0
+        self.layer.cornerRadius = 10
+        self.frame = frame
+    }
+    
+    func update(data:Array<CGFloat>, frame:CGRect){
+        var tmpString = ""
+        for var index = 0; index < 4; ++index {
+            if data[index] as CGFloat > 0.5{
+                tmpString = tmpString + painDescription[index] + " "
+            }
+        }
+        tmpString.substringFromIndex(advance(tmpString.startIndex,1))
+        self.painAttributes?.text = tmpString
+        self.painLevel?.text = (data[4] * 10).description
+        
+    }
+    
+    func Done(sender:Button!){
+        println("Sefes")
+        self.removeFromSuperview()
+        
+    }
+
+}
+
 class ExerciseAlert: UIView, CheckBoxDelegate {
     
     var exerciseName:TextField?
