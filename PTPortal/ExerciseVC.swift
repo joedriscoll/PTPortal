@@ -20,9 +20,10 @@ class ExerciseVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet var editViewButton: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
+        //self.cell?.frame = CGRect(x: self.backgroundView.frame.width * 0.025, y: self.backgroundView.frame.height * 0.05, width: self.backgroundView.frame.width * 0.95, height: self.backgroundView.frame.height * 0.01)
         self.eProc = ExerciseProc(t:self.tableView)
         self.editView = ExerciseAlert()
-        self.editView?.setUp(CGRect(x: 40, y: 150, width: 300, height: 250))
+        self.editView?.setUp(CGRect(x: backgroundView.frame.width * 0.025, y: backgroundView.frame.height * 0.07, width: backgroundView.frame.width * 0.95, height: 240))
         //tableView.layer.cornerRadius = 5
         //tableView.layer.borderWidth = 2
         //tableView.layer.borderColor = UIColor.blackColor().CGColor

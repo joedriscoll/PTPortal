@@ -91,7 +91,7 @@ class PatientViewVC: UIViewController {
                 self.lineChart?.numberOfGridLinesX = 5
                 self.lineChart?.labelsYVisible = true
                 self.lineChart?.numberOfGridLinesY = 5
-                self.lineChart?.frame = CGRect(x: 20, y: 60, width: 300, height: 200)
+                self.lineChart?.frame = CGRect(x: chart.frame.width * 0.035, y: chart.frame.height * 0.15, width: chart.frame.width * 0.95, height: chart.frame.height * 0.4)
             
                 chart.addSubview(self.lineChart!)
                 dayLabel.text = self.current_dic.valueForKey("name") as NSString
@@ -163,7 +163,7 @@ class PatientViewVC: UIViewController {
             self.graph = graph
             self.pain = PainAlert()
          
-            self.pain?.setup([0,0,0,0,0,0,0], frame: CGRectMake(30.0, 100.0, 300.0, 200.0))
+            self.pain?.setup([0,0,0,0,0,0,0], frame: CGRectMake(cha.frame.width * 0.025, 100.0, cha.frame.width * 0.95, 200.0))
             
         }
         override func processData(data: NSDictionary) {

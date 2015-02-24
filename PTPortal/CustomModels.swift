@@ -576,7 +576,7 @@ class ExerciseProc: Processor{
             var all_data:String = (self.current_exercises_dic[a].valueForKey("e_date") as String) + ": " + (self.current_exercises_dic[a].valueForKey("name") as String)
             self.current_exercises.append(all_data)
         }
-        self.all_exercises.append("Add Exercise")
+        self.all_exercises.append("+ Add Exercise")
         self.all_exercises_dic.append(Dictionary<String,String>())
         dispatch_async(dispatch_get_main_queue()) {
             if self.lis == 0{
