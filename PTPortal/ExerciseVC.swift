@@ -23,7 +23,7 @@ class ExerciseVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         //self.cell?.frame = CGRect(x: self.backgroundView.frame.width * 0.025, y: self.backgroundView.frame.height * 0.05, width: self.backgroundView.frame.width * 0.95, height: self.backgroundView.frame.height * 0.01)
         self.eProc = ExerciseProc(t:self.tableView)
         self.editView = ExerciseAlert()
-        self.editView?.setUp(CGRect(x: backgroundView.frame.width * 0.025, y: backgroundView.frame.height * 0.07, width: backgroundView.frame.width * 0.95, height: 240))
+        self.editView?.setUp(CGRect(x: backgroundView.frame.width * 0.025, y: backgroundView.frame.height * 0.07, width: backgroundView.frame.width * 0.95, height: 300))
         //tableView.layer.cornerRadius = 5
         //tableView.layer.borderWidth = 2
         //tableView.layer.borderColor = UIColor.blackColor().CGColor
@@ -122,11 +122,14 @@ class ExerciseVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
                     
                 }
                 else{
-                backgroundView.addSubview(editView!)
-                editView?.exerciseName?.text = self.eProc!.table_items[indexPath.item] // direct to patient page
-                editView?.exerciseAs?.text = self.eProc!.all_exercises_dic[indexPath.row].valueForKey("e_sets") as? String
-                editView?.setStates(eProc?.all_exercises_dic[indexPath.row].valueForKey("e_assigned_days") as [Int])
-                editView?.e_id = eProc?.all_exercises_dic[indexPath.row].valueForKey("e_id") as? Int
+                    editView?.clear()
+                    backgroundView.addSubview(editView!)
+                    editView?.exerciseName?.text = self.eProc!.table_items[indexPath.item] // direct to patient page
+                    editView?.exerciseAs?.text = self.eProc!.all_exercises_dic[indexPath.row].valueForKey("e_sets") as? String
+                    editView?.setStates(eProc?.all_exercises_dic[indexPath.row].valueForKey("e_assigned_days") as [Int])
+                    
+                    editView?.e_id = eProc?.all_exercises_dic[indexPath.row].valueForKey("e_id") as? Int
+                    editView?.url?.text = self.eProc!.all_exercises_dic[indexPath.row].valueForKey("e_link")! as? String
                 }
             }
         }

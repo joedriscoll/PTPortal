@@ -197,6 +197,8 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
     var e_id:Int?
     var e_post:PostReq?
     weak var e_proc:ExerciseProc?
+    var url:TextField?
+    var urlLabel:ExerciseAlertLabel?
     
     func getBoxes()->[CheckBox]{
         
@@ -205,7 +207,7 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
     
     func addPost(ePP:ExerciseProc){
         var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
-        self.e_post = PostReq(post:"session_key=\(session_key)&e_id=\(self.e_id)&name=\(self.exerciseName!.text)&sets=\(self.exerciseAs!.text)&assinged_days=\(self.getStates())", url: c.ip+"/ptapi/editExerciseData")
+        self.e_post = PostReq(post:"session_key=\(session_key)&e_id=\(self.e_id)&name=\(self.exerciseName!.text)&sets=\(self.exerciseAs!.text)&assinged_days=\(self.getStates())&url=\(self.url!.text)", url: c.ip+"/ptapi/editExerciseData")
         self.e_proc = ePP
         
     }
@@ -225,12 +227,18 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
         self.exerciseAs?.setUp("Sets and reps",frame:CGRectMake(20, 140, 250, 30))
         self.exerciseDone = Button()
         self.exerciseDone?.backgroundColor = customColor.firstBlue
-        self.exerciseDone?.setUp("Update",frame: CGRectMake(190, 190, 80, 30))
+        self.exerciseDone?.setUp("Update",frame: CGRectMake(190, 255, 80, 30))
         self.exerciseDone?.addTarget(self, action:"Done:", forControlEvents: UIControlEvents.TouchUpInside)
         self.exerciseCancel = Button()
         self.exerciseCancel?.backgroundColor = customColor.red
-        self.exerciseCancel?.setUp("Cancel",frame: CGRectMake(20, 190, 80, 30))
+        self.exerciseCancel?.setUp("Cancel",frame: CGRectMake(20, 255, 80, 30))
         self.exerciseCancel?.addTarget(self, action:"Cancel:", forControlEvents: UIControlEvents.TouchUpInside)
+        self.url = TextField()
+        self.url?.setUp("url", frame: CGRectMake(20, 200, 250, 30))
+        self.urlLabel = ExerciseAlertLabel()
+        self.urlLabel?.setUp("URL of exercise directions", frame: CGRectMake(20, 175, 250, 30))
+        self.addSubview(self.url!)
+        self.addSubview(self.urlLabel!)
         self.addSubview(exerciseName!)
         self.addSubview(exerciseAs!)
         self.addSubview(exerciseDone!)
@@ -249,10 +257,10 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
         var patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString
         var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
         if self.e_id >= 0{
-            e_post?.update("session_key=\(session_key)&e_id=\(self.e_id!)&name=\(self.exerciseName!.text)&patient_username=\(patient_username)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())", url: c.ip+"/ptapi/editExerciseData")
+            e_post?.update("session_key=\(session_key)&e_id=\(self.e_id!)&name=\(self.exerciseName!.text)&patient_username=\(patient_username)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())&url=\(self.url!.text)", url: c.ip+"/ptapi/editExerciseData")
         }
         else{
-            e_post?.update("session_key=\(session_key)&patient_username=\(patient_username)&name=\(self.exerciseName!.text)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())", url: c.ip+"/ptapi/addNewExercise")
+            e_post?.update("session_key=\(session_key)&patient_username=\(patient_username)&name=\(self.exerciseName!.text)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())&url=\(self.url!.text)", url: c.ip+"/ptapi/addNewExercise")
         }
         e_post?.Post(self.e_proc!)
         self.removeFromSuperview()
@@ -264,6 +272,7 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
         self.exerciseName?.text = ""
         self.exerciseAs?.text = ""
         self.e_id = -1
+        self.url?.text = ""
         
     }
     
