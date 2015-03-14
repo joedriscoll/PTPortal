@@ -23,6 +23,9 @@ class PatientViewVC: UIViewController {
         println("Called gotoPatientView: unwind action")
     }
     
+    @IBAction func exerciseTapped(sender: AnyObject) {
+        self.previous = 1
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +46,7 @@ class PatientViewVC: UIViewController {
             patientNameLabel.text = patient_username + "'s Statistics"
             var format = NSDateFormatter()
             format.dateFormat = "yyyy-MM-dd"
+            self.act_g?.lineChart?.clear()
             self.actGet?.update("?session_key=\(session_key)&patient_username=\(patient_username)&date=\(format.stringFromDate(NSDate()))", url: c.ip+"/ptapi/getActivity")
             self.actGet?.Get(self.actProc!)
             

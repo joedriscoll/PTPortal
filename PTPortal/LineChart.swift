@@ -606,8 +606,8 @@ class LineChart: UIControl {
         var height = drawingHeight / maximumYValue
         for var index = 0; index <= Int(maximumYValue); index += step {
             var yValue = self.bounds.height - (CGFloat(index) * height) - (axisInset * 1.5)
-            var label = UILabel(frame: CGRect(x: 0, y: yValue, width: axisInset, height: axisInset))
-            label.font = UIFont.systemFontOfSize(10)
+            var label = UILabel(frame: CGRect(x: -10, y: yValue, width: axisInset + 10, height: axisInset))
+            label.font = UIFont.systemFontOfSize(9)
             label.textAlignment = NSTextAlignment.Center
             label.text = String(index)
             self.addSubview(label)
