@@ -161,6 +161,7 @@ class PainAlert: UIView {
         self.frame = frame
     }
     
+    
     func update(data:Array<CGFloat>, frame:CGRect){
         var tmpString = ""
         for var index = 0; index < 4; ++index {
@@ -170,8 +171,40 @@ class PainAlert: UIView {
         }
         tmpString.substringFromIndex(advance(tmpString.startIndex,1))
         self.painAttributes?.text = tmpString
+        self.painAttributes?.textColor = UIColor.darkGrayColor()
         self.painLevel?.text = (data[4] * 10).description
-        
+        var num = data[4]*10
+        println(num)
+        if (num == 0){
+            self.painLevel?.text =  "No Pain"
+            
+        }
+        if (0 < num && num < 3.0){
+            self.painLevel?.text =  "\(num): Can be Ignored"
+            self.painLevel?.textColor = customColor.green
+        }
+        if (3.0 <= num && num < 5.0){
+            self.painLevel?.text =  " \(num): Interferes with Tasks"
+            self.painLevel?.textColor = customColor.firstBlue
+
+            
+        }
+        if (5.0 <= num && num < 7.0){
+            self.painLevel?.text =  "\(num): Interferes with Concentration"
+            self.painLevel?.textColor = customColor.purple
+
+            
+        }
+        if (7.0 <= num && num < 9.5){
+            self.painLevel?.text =  "\(num): Interferes with Basic Needs"
+            self.painLevel?.textColor = customColor.orange
+
+        }
+        if (9.5 <= num && num < 11){
+            self.painLevel?.text =  "\(num): Bed Rest Required"
+            self.painLevel?.textColor = customColor.red
+
+        }
     }
     
     func Done(sender:Button!){
@@ -190,7 +223,7 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
     var sets:ExerciseAlertLabel?
     var exerciseAs:TextField?
     var exerciseDone:Button?
-    var exerciseCancel:Button?
+    var exerciseDelete:Button?
     let mCheckboxTitles = ["Mon", "Tue","Wed", "Thr", "Fri","Sat", "Sun"];
     var line = LineChart()
     var boxes:[CheckBox]?
@@ -229,10 +262,10 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
         self.exerciseDone?.backgroundColor = customColor.firstBlue
         self.exerciseDone?.setUp("Update",frame: CGRectMake(190, 255, 80, 30))
         self.exerciseDone?.addTarget(self, action:"Done:", forControlEvents: UIControlEvents.TouchUpInside)
-        self.exerciseCancel = Button()
-        self.exerciseCancel?.backgroundColor = customColor.red
-        self.exerciseCancel?.setUp("Cancel",frame: CGRectMake(20, 255, 80, 30))
-        self.exerciseCancel?.addTarget(self, action:"Cancel:", forControlEvents: UIControlEvents.TouchUpInside)
+        self.exerciseDelete = Button()
+        self.exerciseDelete?.backgroundColor = customColor.red
+        self.exerciseDelete?.setUp("Delete",frame: CGRectMake(20, 255, 80, 30))
+        self.exerciseDelete?.addTarget(self, action:"Delete:", forControlEvents: UIControlEvents.TouchUpInside)
         self.url = TextField()
         self.url?.setUp("url", frame: CGRectMake(20, 200, 250, 30))
         self.urlLabel = ExerciseAlertLabel()
@@ -242,7 +275,7 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
         self.addSubview(exerciseName!)
         self.addSubview(exerciseAs!)
         self.addSubview(exerciseDone!)
-        self.addSubview(exerciseCancel!)
+        self.addSubview(exerciseDelete!)
         self.backgroundColor = UIColor.whiteColor()
         self.layer.borderColor = UIColor.blackColor().CGColor
         self.layer.borderWidth = 2.0
@@ -276,10 +309,17 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
         
     }
     
-    func Cancel(sender:Button!){
-    
-        println("Cancel")
+    func Delete(sender:Button!){
+        var patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString
+        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
+        if self.e_id >= 0{
+            e_post?.update("session_key=\(session_key)&e_id=\(self.e_id!)&name=\(self.exerciseName!.text)&patient_username=\(patient_username)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())&url=\(self.url!.text)", url: c.ip+"/ptapi/deleteExerciseData")
+        e_post?.Post(self.e_proc!)
+
+        }
+
         self.removeFromSuperview()
+
     }
     
     func createCheckboxes() -> [CheckBox] {
