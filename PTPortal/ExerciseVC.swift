@@ -28,17 +28,17 @@ class ExerciseVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         //tableView.layer.borderWidth = 2
         //tableView.layer.borderColor = UIColor.blackColor().CGColor
         
-        self.eReq = GetReq(post: "?session_key=None", url: c.ip+"/ptapi/patientsExerciseData")
+        self.eReq = GetReq(post: "?session_key=None", url: (c.ip as String)+"/ptapi/patientsExerciseData")
                 // Do any additional setup after loading the view.
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
 
-        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
-        var username = NSUserDefaults.standardUserDefaults().valueForKey("USERNAME") as NSString
-        var patient_name = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString
-        self.eReq?.update("?session_key=\(session_key)&patient_username=\(patient_name)", url: c.ip+"/ptapi/patientsExerciseData")
+        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as! NSString
+        var username = NSUserDefaults.standardUserDefaults().valueForKey("USERNAME") as! NSString
+        var patient_name = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as! NSString
+        self.eReq?.update("?session_key=\(session_key)&patient_username=\(patient_name)", url: (c.ip as String)+"/ptapi/patientsExerciseData")
         self.eReq?.Get(self.eProc!)
         self.eProc?.table_items = self.eProc!.current_exercises
         self.editView?.addPost(self.eProc!)
@@ -96,13 +96,13 @@ class ExerciseVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         cell!.textLabel?.text = self.eProc!.table_items[indexPath.row]
         ///coloring the texts
         if eProc?.lis == 0{
-            if eProc?.current_exercises_dic[indexPath.row].valueForKey("e_completion") as Int == 0{
+            if eProc?.current_exercises_dic[indexPath.row].valueForKey("e_completion") as! Int == 0{
                 cell!.textLabel?.textColor = customColor.red
             }
-            if eProc?.current_exercises_dic[indexPath.row].valueForKey("e_completion") as Int == 1{
+            if eProc?.current_exercises_dic[indexPath.row].valueForKey("e_completion") as! Int == 1{
                 cell!.textLabel?.textColor = UIColor.grayColor()
             }
-            if eProc?.current_exercises_dic[indexPath.row].valueForKey("e_completion") as Int == 2{
+            if eProc?.current_exercises_dic[indexPath.row].valueForKey("e_completion") as! Int == 2{
                 cell!.textLabel?.textColor = customColor.firstBlue
             }
             
@@ -126,7 +126,7 @@ class ExerciseVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
                     backgroundView.addSubview(editView!)
                     editView?.exerciseName?.text = self.eProc!.table_items[indexPath.item] // direct to patient page
                     editView?.exerciseAs?.text = self.eProc!.all_exercises_dic[indexPath.row].valueForKey("e_sets") as? String
-                    editView?.setStates(eProc?.all_exercises_dic[indexPath.row].valueForKey("e_assigned_days") as [Int])
+                    editView?.setStates(eProc?.all_exercises_dic[indexPath.row].valueForKey("e_assigned_days") as! [Int])
                     
                     editView?.e_id = eProc?.all_exercises_dic[indexPath.row].valueForKey("e_id") as? Int
                     editView?.url?.text = self.eProc!.all_exercises_dic[indexPath.row].valueForKey("e_link")! as? String

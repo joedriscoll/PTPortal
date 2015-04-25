@@ -46,7 +46,7 @@ class TextField: UITextField {
         self.layer.borderColor = UIColor.lightGrayColor().CGColor
         self.layer.borderWidth = 2
         self.layer.cornerRadius = 5
-        self.placeholder = pHolder
+        self.placeholder = pHolder as String
         self.frame = frame
 
     }
@@ -86,7 +86,7 @@ class Button: UIButton {
     
     func setUp(title:NSString,frame:CGRect){
         //self.backgroundColor = UIColor.lightGrayColor()
-        self.setTitle(title, forState: UIControlState.Normal)
+        self.setTitle(title as String, forState: UIControlState.Normal)
         self.frame = frame
         self.layer.cornerRadius = 5
     }
@@ -239,8 +239,8 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
     }
     
     func addPost(ePP:ExerciseProc){
-        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
-        self.e_post = PostReq(post:"session_key=\(session_key)&e_id=\(self.e_id)&name=\(self.exerciseName!.text)&sets=\(self.exerciseAs!.text)&assinged_days=\(self.getStates())&url=\(self.url!.text)", url: c.ip+"/ptapi/editExerciseData")
+        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as! NSString
+        self.e_post = PostReq(post:"session_key=\(session_key)&e_id=\(self.e_id)&name=\(self.exerciseName!.text)&sets=\(self.exerciseAs!.text)&assinged_days=\(self.getStates())&url=\(self.url!.text)", url: (c.ip as String)+"/ptapi/editExerciseData")
         self.e_proc = ePP
         
     }
@@ -287,13 +287,13 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
     }
 
     func Done(sender:Button!){
-        var patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString
-        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
+        var patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as! NSString
+        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as! NSString
         if self.e_id >= 0{
-            e_post?.update("session_key=\(session_key)&e_id=\(self.e_id!)&name=\(self.exerciseName!.text)&patient_username=\(patient_username)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())&url=\(self.url!.text)", url: c.ip+"/ptapi/editExerciseData")
+            e_post?.update("session_key=\(session_key)&e_id=\(self.e_id!)&name=\(self.exerciseName!.text)&patient_username=\(patient_username)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())&url=\(self.url!.text)", url: (c.ip as String)+"/ptapi/editExerciseData")
         }
         else{
-            e_post?.update("session_key=\(session_key)&patient_username=\(patient_username)&name=\(self.exerciseName!.text)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())&url=\(self.url!.text)", url: c.ip+"/ptapi/addNewExercise")
+            e_post?.update("session_key=\(session_key)&patient_username=\(patient_username)&name=\(self.exerciseName!.text)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())&url=\(self.url!.text)", url: (c.ip as String)+"/ptapi/addNewExercise")
         }
         e_post?.Post(self.e_proc!)
         self.removeFromSuperview()
@@ -310,10 +310,10 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
     }
     
     func Delete(sender:Button!){
-        var patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString
-        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
+        var patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as! NSString
+        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as! NSString
         if self.e_id >= 0{
-            e_post?.update("session_key=\(session_key)&e_id=\(self.e_id!)&name=\(self.exerciseName!.text)&patient_username=\(patient_username)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())&url=\(self.url!.text)", url: c.ip+"/ptapi/deleteExerciseData")
+            e_post?.update("session_key=\(session_key)&e_id=\(self.e_id!)&name=\(self.exerciseName!.text)&patient_username=\(patient_username)&sets=\(self.exerciseAs!.text)&assigned_days=\(self.getStates())&url=\(self.url!.text)", url: (c.ip as String)+"/ptapi/deleteExerciseData")
         e_post?.Post(self.e_proc!)
 
         }
@@ -392,9 +392,6 @@ class ExerciseAlert: UIView, CheckBoxDelegate {
 class CheckBox: UIButton {
     weak var mDelegate: CheckBoxDelegate?;
     // #1
-    required init(coder: NSCoder) {
-        super.init();
-    }
     
     deinit{
         println("destroyed checkbox")
@@ -406,6 +403,10 @@ class CheckBox: UIButton {
         self.applyStyle();
         self.setTitle(title, forState: UIControlState.Normal);
         self.addTarget(self, action: "onTouchUpInside:", forControlEvents: UIControlEvents.TouchUpInside);
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
     
     func adjustEdgeInsets() {
@@ -461,7 +462,7 @@ class PostReq{
         self.request = NSMutableURLRequest(URL: self.url)
         self.request.HTTPMethod = "POST"
         self.request.HTTPBody = self.postData
-        self.request.setValue(self.postLength, forHTTPHeaderField: "Content-Length")
+        self.request.setValue((self.postLength as! String), forHTTPHeaderField: "Content-Length")
         self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         self.request.setValue("application/json", forHTTPHeaderField: "Accept")
     }
@@ -490,7 +491,7 @@ class PostReq{
                     println("Error parsing json: \(jsonError)")
                     success = 0
                 }
-                if (self.jsonData?.valueForKey("success") as Int == 1){
+                if (self.jsonData?.valueForKey("success") as! Int == 1){
                     success = 1
                 }
                 else{
@@ -514,14 +515,14 @@ class asProcessor:Processor{
     }
     override func processData(data: NSDictionary) {
         super.processData(data)
-        var success:NSInteger = data.valueForKey("success") as NSInteger
+        var success:NSInteger = data.valueForKey("success") as! NSInteger
         if(success == 1)
         {
             NSLog("Sign Up SUCCESS");
         } else {
             var error_msg:NSString
             if data["error_message"] as? NSString != nil {
-                error_msg = data["error_message"] as NSString
+                error_msg = data["error_message"] as! NSString
             } else {
                 error_msg = "PT Username Not Found"
             }
@@ -543,7 +544,7 @@ class GetReq{
     }
     
     init(post:NSString, url:String){
-        self.url = NSURL(string: url+post)!
+        self.url = NSURL(string: url+(post as String))!
         self.request = NSMutableURLRequest(URL: self.url)
         self.request.HTTPMethod = "GET"
         self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
@@ -553,7 +554,7 @@ class GetReq{
     }
     
     func update(post:NSString, url:String){
-        self.url = NSURL(string: url+post)!
+        self.url = NSURL(string: url+(post as String))!
         self.request = NSMutableURLRequest(URL: self.url)
         self.request.HTTPMethod = "GET"
         self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
@@ -579,7 +580,7 @@ class GetReq{
                     println("Error parsing json: \(jsonError)")
                     success = 0
                 }
-                if (self.jsonData?.valueForKey("success") as Int == 1){
+                if (self.jsonData?.valueForKey("success") as! Int == 1){
                     success = 1
                 }
                 else{
@@ -616,13 +617,13 @@ class ExerciseProc: Processor{
         super.processData(data)
         self.all_exercises = []
         self.current_exercises = []
-        self.all_exercises_dic = data.valueForKey("all_exercises") as [NSDictionary]
-        self.current_exercises_dic = data.valueForKey("current_exercises") as [NSDictionary]
+        self.all_exercises_dic = data.valueForKey("all_exercises") as! [NSDictionary]
+        self.current_exercises_dic = data.valueForKey("current_exercises") as! [NSDictionary]
         for var a = 0;a < self.all_exercises_dic.count; a = a+1{
-            self.all_exercises.append(self.all_exercises_dic[a].valueForKey("name") as String)
+            self.all_exercises.append(self.all_exercises_dic[a].valueForKey("name") as! String)
         }
         for var a = 0;a < self.current_exercises_dic.count; a = a+1{
-            var all_data:String = (self.current_exercises_dic[a].valueForKey("e_date") as String) + ": " + (self.current_exercises_dic[a].valueForKey("name") as String)
+            var all_data:String = (self.current_exercises_dic[a].valueForKey("e_date") as! String) + ": " + (self.current_exercises_dic[a].valueForKey("name") as! String)
             self.current_exercises.append(all_data)
         }
         self.all_exercises.append("+ Add Exercise")

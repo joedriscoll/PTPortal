@@ -29,7 +29,7 @@ class PatientViewVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        actGet = GetReq(post: "?session_key=None&patient_username=None", url: c.ip+"/ptapi/getActivity")
+        actGet = GetReq(post: "?session_key=None&patient_username=None", url: (c.ip as String)+"/ptapi/getActivity")
         self.act_g = ActivityGraph()
         self.actProc = ActProc(lab: dayLabel,cha:chart, graph:self.act_g!)
         
@@ -41,13 +41,13 @@ class PatientViewVC: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
         if (previous == 0){
-            var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
-            var patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as NSString
-            patientNameLabel.text = patient_username + "'s Statistics"
+            var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as! NSString
+            var patient_username = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as! NSString
+            patientNameLabel.text = (patient_username as String) + "'s Statistics"
             var format = NSDateFormatter()
             format.dateFormat = "yyyy-MM-dd"
             self.act_g?.lineChart?.clear()
-            self.actGet?.update("?session_key=\(session_key)&patient_username=\(patient_username)&date=\(format.stringFromDate(NSDate()))", url: c.ip+"/ptapi/getActivity")
+            self.actGet?.update("?session_key=\(session_key)&patient_username=\(patient_username)&date=\(format.stringFromDate(NSDate()))", url: (c.ip as String)+"/ptapi/getActivity")
             self.actGet?.Get(self.actProc!)
             
             //var data = self.actProc.getData()
@@ -86,8 +86,8 @@ class PatientViewVC: UIViewController {
                 self.graph_data = graphDataReq
                 self.view_index = graphDataReq.count - 1
                 self.current_dic = self.graph_data[self.view_index]
-                var ll = self.current_dic.valueForKey("data")!.valueForKey("data")! as Array<Array<CGFloat>>
-                self.lineChart?.addLine(self.current_dic.valueForKey("data")?.valueForKey("activity") as [CGFloat],pain:self.current_dic.valueForKey("data")?.valueForKey("pain") as [CGFloat], extradata: self.current_dic.valueForKey("data")!.valueForKey("data") as Array<Array<CGFloat>>)
+                var ll = self.current_dic.valueForKey("data")!.valueForKey("data")! as! Array<Array<CGFloat>>
+                self.lineChart?.addLine(self.current_dic.valueForKey("data")?.valueForKey("activity") as! [CGFloat],pain:self.current_dic.valueForKey("data")?.valueForKey("pain") as! [CGFloat], extradata: self.current_dic.valueForKey("data")!.valueForKey("data") as! Array<Array<CGFloat>>)
                 self.lineChart?.axisInset = 20
                 self.lineChart?.labelsXVisible = true
                 self.lineChart?.gridVisible = false
@@ -98,13 +98,13 @@ class PatientViewVC: UIViewController {
                 self.lineChart?.frame = CGRect(x: chart.frame.width * 0.035, y: chart.frame.height * 0.15, width: chart.frame.width * 0.95, height: chart.frame.height * 0.4)
             
                 chart.addSubview(self.lineChart!)
-                dayLabel.text = self.current_dic.valueForKey("name") as NSString
+                dayLabel.text = self.current_dic.valueForKey("name") as! NSString as String
                 self.dayLabelString = dayLabel.text!
 
-                self.nextViewAlert.title = "No Data Available After " + self.dayLabelString
+                self.nextViewAlert.title = "No Data Available After " + (self.dayLabelString as String)
                 self.nextViewAlert.message = "You have reached the most current data available."
                 self.nextViewAlert.addButtonWithTitle("OK")
-                self.prevViewAlert.title = "No Data Available Before " + self.dayLabelString
+                self.prevViewAlert.title = "No Data Available Before " + (self.dayLabelString as String)
                 self.prevViewAlert.message = "You have reached the oldest data available."
                 self.prevViewAlert.addButtonWithTitle("OK")
             }
@@ -118,10 +118,10 @@ class PatientViewVC: UIViewController {
                 self.lineChart?.clear()
                 self.view_index = self.view_index + 1
                 self.current_dic = self.graph_data[self.view_index]
-                self.lineChart?.addLine(self.current_dic.valueForKey("data")?.valueForKey("activity") as [CGFloat],pain:self.current_dic.valueForKey("data")?.valueForKey("pain") as [CGFloat], extradata: self.current_dic.valueForKey("data")?.valueForKey("data") as Array<Array<CGFloat>>)
-                dayLabel.text = self.current_dic.valueForKey("name") as NSString
+                self.lineChart?.addLine(self.current_dic.valueForKey("data")?.valueForKey("activity") as! [CGFloat],pain:self.current_dic.valueForKey("data")?.valueForKey("pain") as! [CGFloat], extradata: self.current_dic.valueForKey("data")?.valueForKey("data") as! Array<Array<CGFloat>>)
+                dayLabel.text = self.current_dic.valueForKey("name") as! NSString as String
                 self.dayLabelString = dayLabel.text!
-                self.nextViewAlert.title = "No Data Available After " + self.dayLabelString
+                self.nextViewAlert.title = "No Data Available After " + (self.dayLabelString as String)
             }
         }
         
@@ -133,10 +133,10 @@ class PatientViewVC: UIViewController {
                 self.lineChart?.clear()
                 self.view_index = self.view_index - 1
                 self.current_dic = self.graph_data[self.view_index]
-                self.lineChart?.addLine(self.current_dic.valueForKey("data")?.valueForKey("activity") as [CGFloat],pain:self.current_dic.valueForKey("data")?.valueForKey("pain") as [CGFloat], extradata: self.current_dic.valueForKey("data")?.valueForKey("data") as Array<Array<CGFloat>>)
-                dayLabel.text = self.current_dic.valueForKey("name") as NSString
+                self.lineChart?.addLine(self.current_dic.valueForKey("data")?.valueForKey("activity") as! [CGFloat],pain:self.current_dic.valueForKey("data")?.valueForKey("pain") as! [CGFloat], extradata: self.current_dic.valueForKey("data")?.valueForKey("data") as! Array<Array<CGFloat>>)
+                dayLabel.text = self.current_dic.valueForKey("name") as! NSString as String
                 self.dayLabelString = dayLabel.text!
-                self.prevViewAlert.title = "No Data Available Before " + self.dayLabelString
+                self.prevViewAlert.title = "No Data Available Before " + (self.dayLabelString as String)
             }
         }
     }
@@ -173,7 +173,7 @@ class PatientViewVC: UIViewController {
         override func processData(data: NSDictionary) {
             super.processData(data)
             self.data = data
-            var graphing:[NSDictionary] = self.data?.valueForKey("graphs") as [NSDictionary]
+            var graphing:[NSDictionary] = self.data?.valueForKey("graphs") as! [NSDictionary]
             self.graph?.create(graphing, chart:self.chart!, dayLabel:self.dayLabel!, pain:self.pain!)
         }
     }

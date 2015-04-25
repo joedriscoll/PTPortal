@@ -92,8 +92,8 @@ class ViewController: UIViewController {
     
     class PatientRequest{
         var c = Connect()
-        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
-        var username = NSUserDefaults.standardUserDefaults().valueForKey("USERNAME") as NSString
+        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as! NSString
+        var username = NSUserDefaults.standardUserDefaults().valueForKey("USERNAME") as! NSString
         var get:NSString
         var url:NSURL
         var items:[String]
@@ -111,7 +111,7 @@ class ViewController: UIViewController {
         init(tableView:UITableView){
             println("initialized request")
             self.get = "?session_key=\(self.session_key)"
-            self.url = NSURL(string: c.ip+"/ptapi/getPatients"+get)!
+            self.url = NSURL(string: (c.ip as String)+"/ptapi/getPatients"+(get as String))!
             self.request = NSMutableURLRequest(URL: self.url)
             self.request.HTTPMethod = "GET"
             self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
@@ -122,10 +122,10 @@ class ViewController: UIViewController {
         }
         
         func update(){
-            self.session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as NSString
-            self.username = NSUserDefaults.standardUserDefaults().valueForKey("USERNAME") as NSString
+            self.session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as! NSString
+            self.username = NSUserDefaults.standardUserDefaults().valueForKey("USERNAME") as! NSString
             self.get = "?session_key=\(self.session_key)"
-            self.url = NSURL(string: c.ip+"/ptapi/getPatients"+get)!
+            self.url = NSURL(string: (c.ip as String)+"/ptapi/getPatients"+(get as String))!
             self.request = NSMutableURLRequest(URL: self.url)
             self.request.HTTPMethod = "GET"
             self.request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
@@ -139,15 +139,15 @@ class ViewController: UIViewController {
             self.urlData = NSURLConnection.sendSynchronousRequest(self.request, returningResponse:&self.response, error:&self.reponseError)
             self.responseData = NSString(data:self.urlData!, encoding:NSUTF8StringEncoding)!
             self.jsonData = NSJSONSerialization.JSONObjectWithData(self.urlData!, options:NSJSONReadingOptions.MutableContainers , error: &self.error) as? NSDictionary
-            if (self.jsonData?.valueForKey("success") as Int == 0){
+            if (self.jsonData?.valueForKey("success") as! Int == 0){
                 let appDomain = NSBundle.mainBundle().bundleIdentifier
                 NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain!)
                 return 0
                 //logoutTapped(logOutButton)
             }
-            self.patient_list = self.jsonData?.valueForKey("patient_list") as [NSString]
+            self.patient_list = self.jsonData?.valueForKey("patient_list") as! [NSString]
             for(name) in self.patient_list{
-                self.items.append(name)
+                self.items.append(name as String)
                 }
             self.tableView?.reloadData()
             return 1
