@@ -12,8 +12,8 @@ import Foundation
 var customColor = CustomColors()
 
 class Connect {
-    let ip:NSString = "http://52.10.125.75"
-    //let ip:NSString = "http://localhost:8000"
+    //let ip:NSString = "http://52.10.125.75"
+    let ip:NSString = "http://localhost:8000"
 }
 var c = Connect()
 
@@ -643,6 +643,67 @@ class ExerciseProc: Processor{
         }
         return Void()
     }
+    
+    
+
+}
+
+
+class PreExerciseProc: Processor{
+    var table_items:[String]
+    weak var table:UITableView?
+    var all_exercises:[String]
+    var current_exercises:[String]
+    var all_exercises_dic:[NSDictionary]
+    var current_exercises_dic:[NSDictionary]
+    var table_dic:[NSDictionary]
+    var lis:Int?
+    weak var ep:ExerciseProc?
+    
+    init(t:UITableView, ep:ExerciseProc){
+        self.table_items = []
+        self.table_dic = []
+        self.all_exercises = []
+        self.current_exercises = []
+        self.all_exercises_dic = []
+        self.current_exercises_dic = []
+        self.table = t
+        self.ep = ep
+        self.lis = 0
+    }
+    
+    override func processData(data: NSDictionary) {
+        super.processData(data)
+        self.all_exercises = []
+        self.current_exercises = ["nn"]
+        self.all_exercises_dic = data.valueForKey("all_exercises") as! [NSDictionary]
+        for var a = 0;a < self.all_exercises_dic.count; a = a+1{
+            self.all_exercises.append(self.all_exercises_dic[a].valueForKey("name") as! String)
+        }
+        self.all_exercises.append("+ New Exercise")
+        self.all_exercises.append("- Cancel")
+        self.all_exercises_dic.append(Dictionary<String,String>())
+        println(self.all_exercises)
+        dispatch_async(dispatch_get_main_queue()) {
+            if self.lis == 0{
+                self.ep?.table_items = self.all_exercises
+                self.ep?.table_dic = self.all_exercises_dic
+                self.ep?.all_exercises = self.all_exercises
+                self.ep?.all_exercises_dic = self.all_exercises_dic
+
+            }
+            else{
+                self.ep?.table_items = self.all_exercises
+                self.ep?.table_dic = self.all_exercises_dic
+                self.ep?.all_exercises = self.all_exercises
+                self.ep?.all_exercises_dic = self.all_exercises_dic
+                
+            }
+            self.table!.reloadData()
+            return Void()
+        }
+        return Void()
+}
 }
 /*
 // Only override drawRect: if you perform custom drawing.

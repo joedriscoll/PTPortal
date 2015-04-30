@@ -14,6 +14,7 @@ class ExerciseVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var cell:UITableViewCell?
     var editView: ExerciseAlert?
     var eProc:ExerciseProc?
+    var peProc:PreExerciseProc?
     var eReq:GetReq?
     var c = Connect()
     
@@ -22,6 +23,7 @@ class ExerciseVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         super.viewDidLoad()
         //self.cell?.frame = CGRect(x: self.backgroundView.frame.width * 0.025, y: self.backgroundView.frame.height * 0.05, width: self.backgroundView.frame.width * 0.95, height: self.backgroundView.frame.height * 0.01)
         self.eProc = ExerciseProc(t:self.tableView)
+        self.peProc = PreExerciseProc(t:self.tableView,ep:self.eProc!)
         self.editView = ExerciseAlert()
         self.editView?.setUp(CGRect(x: backgroundView.frame.width * 0.025, y: backgroundView.frame.height * 0.07, width: backgroundView.frame.width * 0.95, height: 300))
         //tableView.layer.cornerRadius = 5
@@ -114,20 +116,38 @@ class ExerciseVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        var session_key = NSUserDefaults.standardUserDefaults().valueForKey("SESSION_KEY") as! NSString
+        var username = NSUserDefaults.standardUserDefaults().valueForKey("USERNAME") as! NSString
+        var patient_name = NSUserDefaults.standardUserDefaults().valueForKey("CURRENT_PATIENT") as! NSString
         if editView?.superview != backgroundView{
             if self.eProc?.lis == 1{
-                if indexPath.row == eProc!.table_items.count - 1{
+                if self.eProc!.table_items[indexPath.item] == "+ Add Exercise"{
+                    
+                    self.eReq?.update("?session_key=\(session_key)&patient_username=\(patient_name)", url: (c.ip as String)+"/ptapi/commonExercises")
+                    self.eReq?.Get(self.peProc!)
+                    
+                    }
+                else if self.eProc!.table_items[indexPath.item] == "+ New Exercise"{
+
                     editView?.clear()
                     backgroundView.addSubview(editView!)
-                    
+                    //self.eReq?.Get(self.eProc!)
                 }
+                    
+                    
+                else if self.eProc!.table_items[indexPath.item] == "- Cancel"{
+                    
+                    editView?.clear()
+                    self.eReq?.update("?session_key=\(session_key)&patient_username=\(patient_name)", url: (c.ip as String)+"/ptapi/patientsExerciseData")
+                    self.eReq?.Get(self.eProc!)
+                }
+                
                 else{
                     editView?.clear()
                     backgroundView.addSubview(editView!)
                     editView?.exerciseName?.text = self.eProc!.table_items[indexPath.item] // direct to patient page
                     editView?.exerciseAs?.text = self.eProc!.all_exercises_dic[indexPath.row].valueForKey("e_sets") as? String
                     editView?.setStates(eProc?.all_exercises_dic[indexPath.row].valueForKey("e_assigned_days") as! [Int])
-                    
                     editView?.e_id = eProc?.all_exercises_dic[indexPath.row].valueForKey("e_id") as? Int
                     editView?.url?.text = self.eProc!.all_exercises_dic[indexPath.row].valueForKey("e_link")! as? String
                 }
